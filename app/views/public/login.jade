@@ -1,0 +1,23 @@
+section.login
+  h1 ログイン
+  form#loginform
+    p
+      | ユーザーID
+      input(size="30",name="userid",required)
+    p
+      | パスワード
+      input(size="20",name="password",type="password",required)
+    p: input(type="submit",value="ログイン")
+  p
+    | まだアカウントを持っていない方は:
+    a(href="#newaccount") 新規登録
+  section#newaccount(hidden)
+    h1 新規登録
+    form#newaccountform
+      p
+        | ユーザーID
+        input(size="30",name="userid",required)
+      p
+        | パスワード
+        input(size="20",name="password",type="password",required)
+      p: input(type="submit",value="新規登録")
