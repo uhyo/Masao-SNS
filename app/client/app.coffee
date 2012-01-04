@@ -21,12 +21,12 @@ exports.init = ->
 		
 		history.pushState "","",href
 		
-		SS.client.app.startURL $("body"),href
+		SS.client.app.startURL $("#contents"),href
 	window.addEventListener 'popstate',(e)->
-		SS.client.app.startURL $("body"),location.pathname
+		SS.client.app.startURL $("#contents"),location.pathname
 
-	SS.client.app.startURL $("body"),location.pathname
-	#SS.client.app.startURL $("body"),"/login"
+	SS.client.app.startURL $("#contents"),location.pathname
+	#SS.client.app.startURL $("#contents"),"/login"
 
 
 # プロセスをはじめる
