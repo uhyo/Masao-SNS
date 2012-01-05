@@ -5,6 +5,7 @@
 * `password` ハッシュ化済みパスワード
 * `permission` 権限 権限を表す文字列の配列
 * `ip` IPアドレス ログイン時に上書きする
+* `lasttime` 最後にログインした時刻（Date)
 
 ### 権限一覧
 (未定)
@@ -21,6 +22,7 @@
       name: "名前"
       password: "ハッシュ化されたパスワード"
       ip: "IPアドレス"
+      lasttime: Date
       
       permission: ["権限1","権限2"]
     }

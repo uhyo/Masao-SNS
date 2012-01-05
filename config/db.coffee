@@ -23,6 +23,6 @@ MongoDB.open (err,client)->
           if err?
             console.log err
             throw err
-        cb col
+          cb col
         
 

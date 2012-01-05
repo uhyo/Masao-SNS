@@ -25,3 +25,8 @@ SocketStreamでは、まず最初に`app/client/app.coffee`内のメソッドini
 テンプレートについては、`client/special/top.coffee`内で使用するテンプレートを記述できるので、そこに`special-top`のようにして記述している。404についても同様。
 
 404のページは、例えば`/foo`というURLでそもそも`client/public/foo.coffee`がなかった場合にも`client/special/top.coffee`が呼び出されることを利用して、パラメータとして渡される残りのURL（前述）に何か残っているかどうかを確認して何かあれば存在しないURLだと判断し、そこから`SS.client.special["404"]`という記述で呼び出している。
+
+# ログインについて
+ログインした場合、`SS.client.app.setId`メソッドによって現在のユーザーIDが記憶されるが、サーバー側でも独自に記憶している。
+
+現在のIDは`SS.client.app.getId()`によって取得できるので、nullかどうかでログイン済みかどうか判定できる。

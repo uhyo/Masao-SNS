@@ -3,11 +3,12 @@ section.login
   form#loginform
     p
       | ユーザーID
-      input(size="30",name="userid",required)
+      input(size="30",name="id",required,pattern="\\w+",title="半角英数字とアンダーバーのみ可能です。")
     p
       | パスワード
-      input(size="20",name="password",type="password",required)
+      input(size="20",name="password",type="password",required,pattern="\\w+")
     p: input(type="submit",value="ログイン")
+    p.error: output(name="error")
   p
     | まだアカウントを持っていない方は:
     a(href="#newaccount") 新規登録
@@ -16,8 +17,9 @@ section.login
     form#newaccountform
       p
         | ユーザーID
-        input(size="30",name="userid",required)
+        input(size="30",name="id",required,pattern="\\w+",title="半角英数字とアンダーバーのみ可能です。")
       p
         | パスワード
-        input(size="20",name="password",type="password",required)
+        input(size="20",name="password",type="password",required,pattern="\\w+")
       p: input(type="submit",value="新規登録")
+      p.error: output(name="error")

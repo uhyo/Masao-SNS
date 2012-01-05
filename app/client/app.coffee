@@ -28,6 +28,11 @@ exports.init = ->
 	SS.client.app.startURL $("#contents"),location.pathname
 	#SS.client.app.startURL $("#contents"),"/login"
 
+userid=null	# 自分のユーザーIDを覚えておく（サーバー側でも覚えてるけど）
+
+exports.setId=(id)->userid=id
+exports.getId=->userid
+
 
 # プロセスをはじめる
 # parent: プロセスを追加すべきnode

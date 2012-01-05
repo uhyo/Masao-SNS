@@ -11,7 +11,7 @@ exports.init=(option,suburl,loader)->
 		login je.target	#ログインする
 	$("#newaccountform").submit (je)->
 		je.preventDefault()
-		alert "新規登録（未完成）"
+		newuser je.target	# 新規登録
 	$(node).on "click","a",(je)->
 		# #newaccountへ
 		href=je.target.href
@@ -26,4 +26,29 @@ exports.init=(option,suburl,loader)->
 	return end:->
 
 login=(form)->
-	SS.server.user.
+	loginquery form.elements["id"].value, form.elements["password"].value,(err)->
+		if err?
+			form.elements["error"].value=err
+# ログインのクエリを送る
+loginquery=(id,pass,cb=->)->
+	query=
+		id:id
+		password:pass
+	SS.server.users.login query,(error)->
+		if error?
+			cb error
+		else
+			# ログインに成功
+			SS.client.app.setId id
+			cb null
+
+newuser=(form)->
+	query=
+		id:form.elements["id"].value
+		password:form.elements["password"].value
+	SS.server.users.newuser query,(error)->
+		if error?
+			form.elements["error"].value=error
+		else
+			# 新規登録に成功したらログイン
+			loginquery query.id,query.password
