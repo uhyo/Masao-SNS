@@ -8,7 +8,7 @@ exports.init=(option,suburl,loader)->
 	node=loader()
 	$("#loginform").submit (je)->
 		je.preventDefault()
-		alert "ログイン（未完成）"
+		login je.target	#ログインする
 	$("#newaccountform").submit (je)->
 		je.preventDefault()
 		alert "新規登録（未完成）"
@@ -24,3 +24,6 @@ exports.init=(option,suburl,loader)->
 		$("#newaccount").get(0).hidden=false
 		
 	return end:->
+
+login=(form)->
+	SS.server.user.
