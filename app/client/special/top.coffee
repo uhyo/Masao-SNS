@@ -3,7 +3,7 @@
 #optionは必要なとき loader:templateを自動でロードして追加までしてくれるはず
 #suburl: 処理されなかったURLの情報文字列
 # { end: -> }
-exports.init=(option,suburl,loader)->
+exports._init=(option,suburl,loader)->
 	node=loader "special-top"
 	if suburl!="/"
 		# そんなページは知らない

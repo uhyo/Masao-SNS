@@ -1,7 +1,9 @@
 # ページの仕様
-SocketStreamでは、まず最初に`app/client/app.coffee`内のメソッドinitが呼ばれることになっている。
+SocketStreamでは、まず最初に`app/client/app.coffee`内のメソッド_initが呼ばれることになっている。
 
-このinitでは、現在のURLに合わせて対応するページの読み込みが行われる。
+この_initでは、現在のURLに合わせて対応するページの読み込みが行われる。
+
+**注意：_init.coffeeというファイルがあると誤認されるので作らないこと**
 
 ## ページの仕組み
 ページは、ページを構成する一つのテンプレートと一つのスクリプト（.coffeeファイル）によって成り立つ。
@@ -14,6 +16,8 @@ SocketStreamでは、まず最初に`app/client/app.coffee`内のメソッドini
 `/user/na2hiro`など可変的なURLに対応するためには、この例の場合だとuserディレクトリは作らずに、`client/public/user.coffee`、`views/public/user.jade`から読み出す。この動作は、`client/public/user`ディレクトリなどがない場合に引き起こされる。
 
 この場合、残りの`/na2hiro`の部分はuser.coffeeにパラメータとして渡されるので、それを用いて処理を行う。
+
+また、`/foo/bar`と`/foo`別のページを表示させたい場合には、fooフォルダとfoo.coffeeは同時用意することはできないので、fooフォルダを用意して`/foo`のときは`client/public/foo/_.coffee`と`views/public/foo/_.coffee`というファイルに対応する。
 
 ## 特別なページ
 トップページや404のページなど特別なページは、public/以下に存在しない。

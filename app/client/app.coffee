@@ -51,7 +51,7 @@ exports.startProcess=(parent,processobj,template,suburl,option={})->
 		topnode
 		
 	#オブジェクトを呼び出す
-	controller=processobj.init option,suburl,loader
+	controller=processobj._init option,suburl,loader
 		
 	
 # URLからプロセスをはじめる
@@ -77,6 +77,9 @@ exports.startURL=(parent,url="/",option={})->
 	if current==SS.client.public
 		# トップページだった
 		current=SS.client.special.top
+	while !current._init && current._
+		current=current._
+		templatename.push "_"
 	#残ったurlは　オブジェクトに渡す
 	SS.client.app.startProcess parent,current,templatename?.join("-"),"/"+directories.join("/"),option
 	
