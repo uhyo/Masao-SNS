@@ -45,13 +45,39 @@ exports.startProcess=(parent,processobj,template,suburl,option={})->
 	loader=(templatename,tmplopt)->
 		# デフォルトのテンプレート
 		templatename ?= template
-		console.log "loaded: #{templatename}",parent
 		topnode=$("##{templatename}").tmpl tmplopt
 		$(parent).empty().append topnode
 		topnode.get 0
+	loader.parent=parent	# 親も教えてあげる（読み込まないとき用）
+	controller = {}	# ユーティリティを提供する
+	loader.controller=controller
+	
+	# URLフィルタ（自分のところだけで解決。ドメインなどは取り除く）
+	controller.urlFilter=(regexp,func)->
+		$(parent).on "click","a", (je)->
+			return if je.isDefaultPrevented()
+			href=je.target.href
+			return unless href
+			url=$.url href
+			if url.attr("host")!=location.hostname || url.attr("port")!=location.port
+				# 外部へ
+				return
+			# マッチするかどうか
+			result=url.attr("path").match regexp
+			if result?
+				je.preventDefault()
+				if func?
+					# 関数があるなら呼び出す
+					func result
+				else
+					# ないなら移動する
+					SS.client.app.startURL parent,href
+	
 		
 	#オブジェクトを呼び出す
-	controller=processobj._init option,suburl,loader
+	controller.cont=processobj._init option,suburl,loader
+	
+	return controller
 		
 	
 # URLからプロセスをはじめる
@@ -74,14 +100,15 @@ exports.startURL=(parent,url="/",option={})->
 		else
 			# ここで終了だ
 			break
+	console.log current,directories
 	if current==SS.client.public
 		# トップページだった
 		current=SS.client.special.top
-	while !current._init && current._
-		current=current._
-		templatename.push "_"
+	while !current._init && current.index
+		current=current.index
+		templatename.push "index"
 	#残ったurlは　オブジェクトに渡す
-	SS.client.app.startProcess parent,current,templatename?.join("-"),"/"+directories.join("/"),option
+	return SS.client.app.startProcess parent,current,templatename?.join("-"),"/"+directories.join("/"),option
 	
 	
 	

@@ -17,7 +17,7 @@ SocketStreamでは、まず最初に`app/client/app.coffee`内のメソッド_in
 
 この場合、残りの`/na2hiro`の部分はuser.coffeeにパラメータとして渡されるので、それを用いて処理を行う。
 
-また、`/foo/bar`と`/foo`別のページを表示させたい場合には、fooフォルダとfoo.coffeeは同時用意することはできないので、fooフォルダを用意して`/foo`のときは`client/public/foo/_.coffee`と`views/public/foo/_.coffee`というファイルに対応する。
+また、`/foo/bar`と`/foo`別のページを表示させたい場合には、fooフォルダとfoo.coffeeは同時用意することはできないので、fooフォルダを用意して`/foo`のときは`client/public/foo/index.coffee`と`views/public/foo/index.coffee`というファイルに対応する。
 
 ## 特別なページ
 トップページや404のページなど特別なページは、public/以下に存在しない。

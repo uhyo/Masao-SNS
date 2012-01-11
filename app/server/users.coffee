@@ -60,6 +60,21 @@ exports.actions =
 					coll.insert user,{safe:true},(err,docs)->
 						# 成功
 						cb null
+	
+	# 自分のユーザーデータをもらう
+	myData: (cb)->
+		unless @session.user_id?
+			# ログインしていない
+			cb null
+			return
+		M.users (coll)=>
+			coll.findOne {id:@session.user_id}, (err,user)->
+				if err?
+					cb {error:err}
+					return
+				publishFilter user
+				cb user
+				
 					
 				
 
@@ -87,3 +102,9 @@ getIPaddress=(request)->
 # ユーザーID・パスワードがvalidがどうか確かめる
 isValidId=(id)->/^\w+$/.test id
 isValidPassword=(pass)->/^\w+$/.test pass
+
+# ユーザーデータをクライアント側に公開する形に修正
+publishFilter=(user)->
+	delete user.password
+	delete user.ip
+	delete user.lasttime
