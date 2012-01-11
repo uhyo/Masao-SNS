@@ -45,10 +45,10 @@ exports.startProcess=(parent,processobj,template,suburl,option={})->
 	loader=(templatename,tmplopt)->
 		# デフォルトのテンプレート
 		templatename ?= template
-		console.log "loaded: #{templatename}"
+		console.log "loaded: #{templatename}",parent
 		topnode=$("##{templatename}").tmpl tmplopt
 		$(parent).empty().append topnode
-		topnode
+		topnode.get 0
 		
 	#オブジェクトを呼び出す
 	controller=processobj._init option,suburl,loader
