@@ -12,7 +12,7 @@ exports.actions =
 		M.users (coll)=>
 			coll.findOne {id: query.id},(err,user)=>
 				unless user?
-					cb "ユーザーIDまたはパスワードが違います"
+					cb "ユーザーIDまたはパスワードが違います。"
 					return
 				# パスワードをハッシュ化する
 				hashedpassword= cryptopassword query.password,user.password
@@ -25,18 +25,19 @@ exports.actions =
 					if ip?
 						coll.update {id:user.id},{$set:{ip:ip, lasttime: new Date()}}
 				else
-					cb "ユーザーIDまたはパスワードが違います"
+					cb "ユーザーIDまたはパスワードが違います。"
 	
 	# 新規登録
 	#query: {id: String, password: String(raw) }
+	#cb null/エラーメッセージ（あれば）
 	newuser: (query,cb)->
 		if !(isValidId query.id) && !(isValidPassword query.password)
-			cb "ユーザーIDかパスワードが不正です"
+			cb "ユーザーIDかパスワードが不正です。"
 			return
 		M.users (coll)=>
 			coll.findOne {id: query.id},(err,user)=>
 				if user?
-					cb "そのユーザーIDは使用されています"
+					cb "そのユーザーIDは使用されています。"
 					return
 				# 同じIPアドレスで
 				limdate=new Date()
@@ -45,7 +46,7 @@ exports.actions =
 				coll.findOne {ip:ip, lasttime:{$gt: limdate}},(err,user)->
 					console.log user
 					if user?
-						cb "まだ新規登録ができません"
+						cb "まだ新規登録ができません。"
 						return
 					# ユーザーを登録
 					hashedpassword = cryptopassword query.password
@@ -62,6 +63,7 @@ exports.actions =
 						cb null
 	
 	# 自分のユーザーデータをもらう
+	# cb: ユーザーデータ/null（なければ）
 	myData: (cb)->
 		unless @session.user_id?
 			# ログインしていない
@@ -74,6 +76,33 @@ exports.actions =
 					return
 				publishFilter user
 				cb user
+	# 自分のユーザーデータを変更
+	# cb: null/エラーメッセージ（あれば）
+	changeMyProfile: (query,cb)->
+		M.users (coll)=>
+			coll.findOne {id:@session.user_id},(err,user)->
+				unless user?
+					cb "ユーザーIDが不正です。"
+					return
+				hashedpassword=cryptopassword query.password,user.password
+				if hashedpassword==user.password
+					# パスワードが一致した
+					setquery={}
+					if query.name?
+						setquery.name=query.name
+					if query.newpassword?
+						if query.newpassword!=query.newpassword2
+							cb "新しいパスワードが一致しません。"
+							return
+						setquery.password= cryptopassword query.newpassword
+				
+					coll.update {id:user.id},{$set:setquery},{safe:true},(err)->
+						cb null	# 成功した
+						
+				else
+					cb "パスワードが間違っています。"
+				
+			
 				
 					
 				

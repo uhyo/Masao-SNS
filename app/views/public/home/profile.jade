@@ -1,3 +1,22 @@
 //- プロフィール変更を表示する予定
 section
   h1 プロフィール変更
+  form#profileform
+    dl
+      dt ユーザーID
+      dd: output(name="userid")
+      dt 名前
+      dd: input(name="name",size="25",placeholder="名前を入力")
+      dt パスワードの変更
+      dd
+        | 新しいパスワード:
+        input(name="newpassword",type="password",size="20",placeholder="変更する場合入力")
+      dd#newpassagain(hidden)
+        | 再入力:
+        input(name="newpassword2",type="password",size="20",placeholder="再入力")
+    p
+      | パスワードを再び入力して下さい:
+      input(name="password",type="password",size="10",required)
+    p: input(value="変更",type="submit")
+    p.error: output(name="error")
+

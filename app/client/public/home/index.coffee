@@ -4,17 +4,16 @@ exports._init=(option,suburl,loader)->
 		# ログインが必要
 		SS.client.app.startURL loader.parent, "/login",{to:"/home"}
 		return
-	SS.server.users.myData (user)->
-		node=loader null,user	# テンプレートに渡す
-		
-		# 中に子を用意
-		child=document.createElement "div"
-		node.appendChild child
-		cont = SS.client.app.startURL child,"/home/info"
-		
-		loader.controller.urlFilter /^\/home\/(.+)$/,(result)->
-			SS.client.app.startURL child,result[0]
+	node=loader null	# テンプレートに渡す
 	
+	# 中に子を用意
+	child=document.createElement "div"
+	node.appendChild child
+	cont = SS.client.app.startURL child,"/home/info"
+	
+	loader.controller.urlFilter /^\/home\/(.+)$/,(result)->
+		SS.client.app.startURL child,result[0]
+
 	
 		
 	return end:->
