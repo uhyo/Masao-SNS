@@ -1,48 +1,54 @@
 # Server-side Code
 crypto=require 'crypto'
 
-exports.actions =
+exports.actions = (req,res,ss)->
+
+	req.use 'session'
+
 	#query: {id: String, password: String(raw) }
 	#cb: nullなら成功 それ以外はエラーメッセージ
-	login: (query, cb)->
+	login: (query)->
 		# usersコレクションから一致するものを探す
 		unless query.id
-			cb "ユーザーIDが不正です"
+			res "ユーザーIDが不正です"
 			return
-		M.users (coll)=>
-			coll.findOne {id: query.id},(err,user)=>
+		M.users (coll)->
+			coll.findOne {id: query.id},(err,user)->
 				unless user?
-					cb "ユーザーIDまたはパスワードが違います。"
+					res "ユーザーIDまたはパスワードが違います。"
 					return
 				# パスワードをハッシュ化する
 				hashedpassword= cryptopassword query.password,user.password
 				if hashedpassword==user.password
 					# パスワードが一致
-					@session.setUserId user.id
-					cb null	# 成功
+					req.session.setUserId user.id
+					res null	# 成功
 					# IPアドレスと最終ログイン時間を上書きする
-					ip=getIPaddress @request
+					###
+					ip=req.clientIp
 					if ip?
 						coll.update {id:user.id},{$set:{ip:ip, lasttime: new Date()}}
+					###
 				else
-					cb "ユーザーIDまたはパスワードが違います。"
+					res "ユーザーIDまたはパスワードが違います。"
 	
 	# 新規登録
 	#query: {id: String, password: String(raw) }
 	#cb null/エラーメッセージ（あれば）
-	newuser: (query,cb)->
+	newuser: (query)->
 		if !(isValidId query.id) && !(isValidPassword query.password)
-			cb "ユーザーIDかパスワードが不正です。"
+			res "ユーザーIDかパスワードが不正です。"
 			return
-		M.users (coll)=>
-			coll.findOne {id: query.id},(err,user)=>
+		M.users (coll)->
+			coll.findOne {id: query.id},(err,user)->
 				if user?
-					cb "そのユーザーIDは使用されています。"
+					res "そのユーザーIDは使用されています。"
 					return
+				###
 				# 同じIPアドレスで
 				limdate=new Date()
 				limdate.setTime limdate.getTime()-SS.config.user.newuserWait*1000	# これより最近にログインしていたらだめ
-				ip=getIPaddress @request
+				ip=req.clientIp
 				coll.findOne {ip:ip, lasttime:{$gt: limdate}},(err,user)->
 					console.log user
 					if user?
@@ -61,6 +67,7 @@ exports.actions =
 					coll.insert user,{safe:true},(err,docs)->
 						# 成功
 						cb null
+				###
 	
 	# 自分のユーザーデータをもらう
 	# cb: ユーザーデータ/null（なければ）
@@ -125,9 +132,6 @@ makesalt= ->
 		strs[Math.floor Math.random()*le]
 	).join ""
 	
-# IPアドレスを取得 getIPaddress(@request)
-getIPaddress=(request)->
-	SS.io.sockets.sockets[request.socket_id]?.handshake.address.address
 # ユーザーID・パスワードがvalidがどうか確かめる
 isValidId=(id)->/^\w+$/.test id
 isValidPassword=(pass)->/^\w+$/.test pass

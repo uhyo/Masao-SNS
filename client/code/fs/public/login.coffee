@@ -21,7 +21,7 @@ exports._init=(option,suburl,loader)->
 		query=
 			id:id
 			password:pass
-		SS.server.users.login query,(error)->
+		ss.rpc 'users.login',query,(error)->
 			if error?
 				cb error
 			else
