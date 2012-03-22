@@ -1,6 +1,7 @@
 
 exports._init=(option,suburl,loader)->
 	node=loader()
+	app=require '/app'
 	
 	SS.server.users.myData (user)->
 		if user?
@@ -11,13 +12,13 @@ exports._init=(option,suburl,loader)->
 		je.preventDefault()
 		form=je.target
 		# サーバーと通信
-		query=SS.client.util.formQuery form
+		query=require('/util').formQuery form
 		SS.server.users.changeMyProfile query,(error)->
 			if error?
 				form.elements["error"].value=error
 			else
 				# 成功した
-				SS.client.app.startURL loader.parent,"/home/info"
+				app.startURL loader.parent,"/home/info"
 	.on "input", (je)->
 		form=je.target.form
 		pw=form.elements["newpassword"]

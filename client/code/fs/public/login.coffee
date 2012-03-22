@@ -7,6 +7,7 @@
 # option:{to: "ログイン後のURL(省略可)"}
 exports._init=(option,suburl,loader)->
 	node=loader()
+	app=require '/app'
 	
 	login=(form)->
 		loginquery form.elements["id"].value, form.elements["password"].value,(err)->
@@ -14,7 +15,7 @@ exports._init=(option,suburl,loader)->
 				form.elements["error"].value=err
 			else
 				console.log node
-				SS.client.app.startURL node.parentNode, option.to ? "/home"
+				app.startURL node.parentNode, option.to ? "/home"
 	# ログインのクエリを送る
 	loginquery=(id,pass,cb=->)->
 		query=
@@ -25,7 +26,7 @@ exports._init=(option,suburl,loader)->
 				cb error
 			else
 				# ログインに成功
-				SS.client.app.setId id
+				app.setId id
 				cb null
 
 	newuser=(form)->
@@ -39,7 +40,7 @@ exports._init=(option,suburl,loader)->
 				# 新規登録に成功したらログイン
 				loginquery query.id,query.password,(err)->
 					unless err?
-						SS.client.app.startURL node.parentNode, option.to ? "/home"
+						Sapp.startURL node.parentNode, option.to ? "/home"
 	
 	$("#loginform").submit (je)->
 		je.preventDefault()

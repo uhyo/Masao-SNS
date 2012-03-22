@@ -2,6 +2,5 @@
 window.ss = require 'socketstream'
 
 ss.server.on 'ready',->
-  alert require
-  alert require.modules
-  #require '/app'
+  # 基本システムを開始
+  require '/app'

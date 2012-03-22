@@ -5,9 +5,10 @@
 # { end: -> }
 exports._init=(option,suburl,loader)->
 	node=loader "special-top"
+	app=require '/app'
 	if suburl!="/"
 		# そんなページは知らない
-		SS.client.app.startProcess node,SS.client.special["404"],null,suburl
+		app.startProcess node,require('/public/login'),null,suburl
 		return
 	# トップはログインフォーム表示
-	SS.client.app.startURL  node,"/login"
+	app.startURL  node,"/login"
