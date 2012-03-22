@@ -1,5 +1,8 @@
 # Client-side Code
 
+alert require
+alert require.modules
+
 # Bind to socket events
 #SS.socket.on 'disconnect', ->  $('#message').text('SocketStream server is down :-(')
 #SS.socket.on 'reconnect', ->   $('#message').text('SocketStream server is up :-)')
