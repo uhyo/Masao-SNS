@@ -1,16 +1,16 @@
-mongodb=require 'mongodb'
+global.MongoDB=mongodb=require 'mongodb'
 
 #使用するコレクションを列挙しよう
-collections=["users"]
+collections=["users","masao","counters"]
 
 
 mc=config.mongo
-global.MongoDB = new mongodb.Db mc.name, new mongodb.Server mc.host, mc.port
-MongoDB.open (err,client)->
+global.MDB = new mongodb.Db mc.name, new mongodb.Server mc.host, mc.port
+MDB.open (err,client)->
   if err?
     console.error err
     throw err
-  MongoDB.authenticate mc.user, mc.password, (err)->
+  MDB.authenticate mc.user, mc.password, (err)->
     if err?
       console.error err
       throw err
@@ -18,7 +18,7 @@ MongoDB.open (err,client)->
     global.M={}	#collectionへの簡易アクセス
     collections.forEach (x)->
       M[x]= (cb)->
-        MongoDB.collection x,(err,col)->
+        MDB.collection x,(err,col)->
           if err?
             console.error err
             throw err
