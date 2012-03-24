@@ -3,4 +3,4 @@ node_modules
 dump.rdb
 npm-debug.log
 tmp
-public/assets
+client/static/masaofiles
