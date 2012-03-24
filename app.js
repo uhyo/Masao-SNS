@@ -28,4 +28,9 @@ if (ss.env == 'production') ss.client.packAssets();
 var server = http.Server(ss.http.middleware);
 server.listen(3000);
 
+//config読み込み
+global.config=require('./server/config.coffee');
+//DB接続
+require('./server/db.coffee');
+
 ss.start(server);
