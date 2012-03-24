@@ -8,7 +8,7 @@ exports._init=(option,suburl,loader)->
 	app=require '/app'
 	if suburl!="/"
 		# そんなページは知らない
-		app.startProcess node,require('/public/login'),null,suburl
+		app.startProcess node,require('/special/404'),null,suburl
 		return
 	# トップはログインフォーム表示
 	app.startURL  node,"/login"

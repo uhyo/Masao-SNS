@@ -6,6 +6,7 @@ exports._init=(option,suburl,loader)->
 	ss.rpc "users.myData", (user)->
 		if user?
 			form=$("#profileform").get(0)
+			form.elements["userid"].value=user.id
 			form.elements["name"].value=user.name
 	
 	$("#profileform").submit (je)->
