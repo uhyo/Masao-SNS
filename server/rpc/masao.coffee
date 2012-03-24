@@ -18,7 +18,7 @@ exports.actions = (req,res,ss)->
 			else if query._id
 				# _idの文字列
 				q._id=dbutil.get_id query._id
-			coll.findOne (err,doc)->
+			coll.findOne q,(err,doc)->
 				if err?
 					throw err
 				unless doc?
