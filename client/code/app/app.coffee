@@ -4,6 +4,7 @@
 #SS.socket.on 'disconnect', ->  $('#message').text('SocketStream server is down :-(')
 #SS.socket.on 'reconnect', ->   $('#message').text('SocketStream server is up :-)')
 # 外部用にIDを変更するアレ
+userid=null	# 自分のユーザーIDを覚えておく（サーバー側でも覚えてるけど）
 exports.setId=(id)->userid=id
 exports.getId=->userid
 
@@ -19,7 +20,7 @@ exports.startProcess=startProcess=(parent,processobj,template,suburl,option={})-
 	loader=(templatename,tmplopt)->
 		# デフォルトのテンプレート
 		templatename ?= template
-		topnode=$ JT[templatename] tmplopt
+		topnode=$ (JT[templatename] ? JT["#{templatename}-index"]) tmplopt
 		$(parent).empty().append topnode
 		topnode.get 0
 	loader.parent=parent	# 親も教えてあげる（読み込まないとき用）
@@ -93,7 +94,6 @@ exports.startURL=startURL=(parent,url="/",option={})->
 	
 	
 #============== main code start
-userid=null	# 自分のユーザーIDを覚えておく（サーバー側でも覚えてるけど）
 # リンクを止める
 $(document).on 'click','a', (je)->
 	return if je.isDefaultPrevented()

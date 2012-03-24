@@ -71,25 +71,25 @@ exports.actions = (req,res,ss)->
 	
 	# 自分のユーザーデータをもらう
 	# cb: ユーザーデータ/null（なければ）
-	myData: (cb)->
-		unless @session.user_id?
+	myData: ->
+		unless req.session.userId?
 			# ログインしていない
-			cb null
+			res null
 			return
-		M.users (coll)=>
-			coll.findOne {id:@session.user_id}, (err,user)->
+		M.users (coll)->
+			coll.findOne {id:req.session.userId}, (err,user)->
 				if err?
-					cb {error:err}
+					res {error:err}
 					return
 				publishFilter user
-				cb user
+				res user
 	# 自分のユーザーデータを変更
 	# cb: null/エラーメッセージ（あれば）
-	changeMyProfile: (query,cb)->
-		M.users (coll)=>
-			coll.findOne {id:@session.user_id},(err,user)->
+	changeMyProfile: (query)->
+		M.users (coll)->
+			coll.findOne {id:req.session.userId},(err,user)->
 				unless user?
-					cb "ユーザーIDが不正です。"
+					res "ユーザーIDが不正です。"
 					return
 				hashedpassword=cryptopassword query.password,user.password
 				if hashedpassword==user.password
@@ -99,15 +99,15 @@ exports.actions = (req,res,ss)->
 						setquery.name=query.name
 					if query.newpassword?
 						if query.newpassword!=query.newpassword2
-							cb "新しいパスワードが一致しません。"
+							res "新しいパスワードが一致しません。"
 							return
 						setquery.password= cryptopassword query.newpassword
 				
 					coll.update {id:user.id},{$set:setquery},{safe:true},(err)->
-						cb null	# 成功した
+						res null	# 成功した
 						
 				else
-					cb "パスワードが間違っています。"
+					res "パスワードが間違っています。"
 				
 			
 				

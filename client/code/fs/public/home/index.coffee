@@ -1,6 +1,7 @@
 
 exports._init=(option,suburl,loader)->
 	app=require '/app'
+	console.log app.getId()
 	unless app.getId()
 		# ログインが必要
 		app.startURL loader.parent, "/login",{to:"/home"}

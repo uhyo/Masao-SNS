@@ -14,7 +14,6 @@ exports._init=(option,suburl,loader)->
 			if err?
 				form.elements["error"].value=err
 			else
-				console.log node
 				app.startURL node.parentNode, option.to ? "/home"
 	# ログインのクエリを送る
 	loginquery=(id,pass,cb=->)->

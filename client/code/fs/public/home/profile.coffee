@@ -3,7 +3,7 @@ exports._init=(option,suburl,loader)->
 	node=loader()
 	app=require '/app'
 	
-	SS.server.users.myData (user)->
+	ss.rpc "users.myData", (user)->
 		if user?
 			form=$("#profileform").get(0)
 			form.elements["name"].value=user.name
@@ -13,7 +13,7 @@ exports._init=(option,suburl,loader)->
 		form=je.target
 		# サーバーと通信
 		query=require('/util').formQuery form
-		SS.server.users.changeMyProfile query,(error)->
+		ss.rpc "users.changeMyProfile", query,(error)->
 			if error?
 				form.elements["error"].value=error
 			else
