@@ -1,0 +1,26 @@
+section
+  h1 正男をアップロード
+  form#uploadform
+    p
+      | 正男のHTMLファイルを選択して下さい:
+      input(type="file",name="file",accept="text/html,text/plain",required)
+    p
+      | タイトル:
+      input(name="title",type="text",size="30",placeholder="タイトル",required)
+    p
+      | 説明:
+      input(name="description",type="text",size="50",placeholder="説明",required)
+    p
+      | 作者:
+      input(name="author",type="text",size="30",placeholder="作者",required)
+    fieldset
+      legend 正男の種類
+      select(name="type",required)
+        option(value="normal",selected) まさおコンストラクション
+        option(value="classic") まさおコンストラクション classic
+        option(value="fx") まさおコンストラクション FX
+      p
+        | バージョン
+        select(name="version")
+    p: input(type="submit",value="アップロード")
+  #messagearea

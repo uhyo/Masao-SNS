@@ -4,7 +4,7 @@ exports._init=(option,suburl,loader)->
 
 	masaoid=suburl.slice 1	#/を取り除く
 	# 正男を問い合わせる
-	app.assertLogin loader.parent,->
+	app.assertLogin loader.parent,"正男管理を行うにはログインして下さい。",->
 		require('/masaoloader').loadMasao masaoid,(doc)->
 			app=require '/app'
 			if doc.error?

@@ -1,5 +1,7 @@
 section.login
   h1 ログイン
+  - if(message)
+    p= message
   form#loginform
     p
       | ユーザーID

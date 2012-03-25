@@ -1,5 +1,6 @@
 section.messagepage
   //- 汎用メッセージページ
-  h1= title
+  - if(title)
+    h1= title
   - if(message)
     p= message

@@ -105,11 +105,13 @@ exports.error=(parent,option)->
 exports.message=(parent,option)->
 	startProcess parent,require('/special/message'),null,null,option
 # ログインしていない場合はログインさせる
-# parent:ログインフォーム表示場所
-exports.assertLogin=(parent,cb)->
+# parent:ログインフォーム表示場所 message:表示するメッセージ（省略可）
+exports.assertLogin=(opts...,cb)->
+	[parent,message]=opts
+	message ?= "ログインして下さい"
 	unless userid?
 		# まだログインしていない
-		startURL parent,"/login", {_nohistory:true,to:cb}
+		startURL parent,"/login", {_nohistory:true,to:cb,message:message}
 	else
 		# ログイン済み
 		cb()

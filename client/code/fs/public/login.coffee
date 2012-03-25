@@ -4,9 +4,9 @@
 #optionは必要なとき loader:templateを自動でロードして追加までしてくれるはず
 #suburl: 処理されなかったURLの情報文字列
 # { end: -> }
-# option:{to: "ログイン後のURL(省略可)"またはコールバック}
+# option:{to: "ログイン後のURL(省略可)"またはコールバック, message?:"メッセージ"}
 exports._init=(option={},suburl,loader)->
-	node=loader()
+	node=loader null,{message:option.message}
 	app=require '/app'
 	
 	login=(form)->
