@@ -61,6 +61,11 @@ exports.startURL=startURL=(parent,url="/",option={})->
 	if url.indexOf(origin)==0
 		#プロトコルから始まる場合には /foo/bar 形式に修正
 		url=url.slice origin.length
+	console.log parent
+	if $(parent).attr("id")=="contents"
+		# 全体的に移動する場合は履歴いじる
+		history.pushState "","",url
+
 	#urlは /foo/bar形式
 	directories=url.split("/")[1..]	# ["foo","bar"]
 	# 上から順番に
@@ -106,8 +111,6 @@ $(document).on 'click','a', (je)->
 		return
 	
 	je.preventDefault()
-	
-	history.pushState "","",href
 	
 	startURL $("#contents"),href
 window.addEventListener 'popstate',(e)->
