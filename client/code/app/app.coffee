@@ -96,7 +96,13 @@ exports.startURL=startURL=(parent,url="/",option={})->
 	###
 	#残ったurlは　オブジェクトに渡す
 	return startProcess parent,current,templatename?.join("-"),"/"+gone.join("/"),option
-	
+
+# エラーページを表示する
+exports.error=(parent,option)->
+	startProcess parent,require('/special/error'),null,null,option
+# メッセージを表示する
+exports.message=(parent,option)->
+	startProcess parent,require('/special/message'),null,null,option
 	
 #============== main code start
 # リンクを止める
