@@ -56,13 +56,14 @@ exports.startProcess=startProcess=(parent,processobj,template,suburl,option={})-
 		
 	
 # URLからプロセスをはじめる
+# startURLで処理されるオプション:_nohistory:true
 exports.startURL=startURL=(parent,url="/",option={})->
 	origin="#{location.protocol}//#{location.host}"	#ex)http://localhost:3000
 	if url.indexOf(origin)==0
 		#プロトコルから始まる場合には /foo/bar 形式に修正
 		url=url.slice origin.length
 	console.log parent
-	if $(parent).attr("id")=="contents"
+	if $(parent).attr("id")=="contents" && !option._nohistory
 		# 全体的に移動する場合は履歴いじる
 		history.pushState "","",url
 
@@ -103,6 +104,15 @@ exports.error=(parent,option)->
 # メッセージを表示する
 exports.message=(parent,option)->
 	startProcess parent,require('/special/message'),null,null,option
+# ログインしていない場合はログインさせる
+# parent:ログインフォーム表示場所
+exports.assertLogin=(parent,cb)->
+	unless userid?
+		# まだログインしていない
+		startURL parent,"/login", {_nohistory:true,to:cb}
+	else
+		# ログイン済み
+		cb()
 	
 #============== main code start
 # リンクを止める

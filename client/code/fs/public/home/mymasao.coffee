@@ -16,7 +16,13 @@ exports._init=(option,suburl,loader)->
 			a.href="/masao/#{doc.number}"
 			a.textContent=doc.title
 			a.title=doc.description
-			ul.append $(li).append a
+			
+			#設定リンク
+			a2=document.createElement "a"
+			a2.href="/manager/masao/#{doc.number}"
+			a2.textContent="設定"
+			
+			ul.append $(li).append(a).append(document.createTextNode " ").append a2
 
 		
 	return end:->

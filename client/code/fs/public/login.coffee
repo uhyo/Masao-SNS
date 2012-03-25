@@ -4,8 +4,8 @@
 #optionは必要なとき loader:templateを自動でロードして追加までしてくれるはず
 #suburl: 処理されなかったURLの情報文字列
 # { end: -> }
-# option:{to: "ログイン後のURL(省略可)"}
-exports._init=(option,suburl,loader)->
+# option:{to: "ログイン後のURL(省略可)"またはコールバック}
+exports._init=(option={},suburl,loader)->
 	node=loader()
 	app=require '/app'
 	
@@ -14,7 +14,10 @@ exports._init=(option,suburl,loader)->
 			if err?
 				form.elements["error"].value=err
 			else
-				app.startURL node.parentNode, option.to ? "/home"
+				if typeof option.to=="function"
+					option.to()
+				else
+					app.startURL node.parentNode, option.to ? "/home"
 	# ログインのクエリを送る
 	loginquery=(id,pass,cb=->)->
 		query=
@@ -39,7 +42,10 @@ exports._init=(option,suburl,loader)->
 				# 新規登録に成功したらログイン
 				loginquery query.id,query.password,(err)->
 					unless err?
-						Sapp.startURL node.parentNode, option.to ? "/home"
+						if typeof option.to=="function"
+							option.to()
+						else
+							app.startURL node.parentNode, option.to ? "/home"
 	
 	$("#loginform").submit (je)->
 		je.preventDefault()
