@@ -21,7 +21,7 @@ exports._init=(option,suburl,loader)->
 		#正男がある
 		console.log doc
 		masao=doc.masao
-		node=loader null,masao
+		node=loader null,doc
 		wrapper=$(node).find "div.masaowrapper"
 		#オブジェクトを作る
 		object=$(document.createElement "object")
@@ -31,7 +31,8 @@ exports._init=(option,suburl,loader)->
 		
 		#ファイル名はhard coding
 		for x in ["title","ending","gameover","pattern"]
-			masao.params["filename_#{x}"]="/masaofiles/#{x}.gif"
+			unless doc.resources[x]?
+				masao.params["filename_#{x}"]="/masaofiles/#{x}.gif"
 		
 		#paramをセットする
 		#まずcode

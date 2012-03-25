@@ -109,9 +109,9 @@ $(document).on 'click','a', (je)->
 	
 	history.pushState "","",href
 	
-	SS.client.app.startURL $("#contents"),href
+	startURL $("#contents"),href
 window.addEventListener 'popstate',(e)->
-	SS.client.app.startURL $("#contents"),location.pathname
+	startURL $("#contents"),location.pathname
 
 startURL $("#contents"),location.pathname
 

@@ -22,13 +22,16 @@ exports.actions = (req,res,ss)->
 				if hashedpassword==user.password
 					# パスワードが一致
 					req.session.setUserId user.id
-					res null	# 成功
+					# 内部IDも覚えておく
+					req.session._id=user._id
+					req.session.save ->
+						res null	# 成功
 					# IPアドレスと最終ログイン時間を上書きする
-					###
+					
 					ip=req.clientIp
 					if ip?
 						coll.update {id:user.id},{$set:{ip:ip, lasttime: new Date()}}
-					###
+					
 				else
 					res "ユーザーIDまたはパスワードが違います。"
 	
@@ -108,11 +111,19 @@ exports.actions = (req,res,ss)->
 						
 				else
 					res "パスワードが間違っています。"
-				
-			
-				
-					
-				
+	# 自分の投稿した正男を得る（配列で）
+	myMasao: ->
+		unless req.session.userId
+			res error:"ログインして下さい"
+			return
+		M.masao (coll)->
+			coll.find {"user._id":req.session._id},(err,cursor)->
+				if err?
+					throw err
+				cursor.toArray (err,docs)->
+					docs.forEach (x)->
+						delete x.masao	# 本体はいらない
+					res docs
 
 #raw password -> hashed password
 cryptopassword=(raw,salt=null)->

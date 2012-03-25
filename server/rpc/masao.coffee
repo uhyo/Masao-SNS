@@ -25,6 +25,7 @@ exports.actions = (req,res,ss)->
 					res {error:"その正男は存在しません"}
 				else
 					res doc
+					
 	
 # 正男の連番を得る
 serveNewNumber=(cb)-> require('../dbutil').count "masaoNumber",cb
