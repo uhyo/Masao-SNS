@@ -2,6 +2,9 @@
 exports._init=(option,suburl,loader)->
 
 	app=require '/app'
+	masaoloader=require '/masaoloader'
+	
+	masaodoc=null	# 正男のDBオブジェクト
 	
 	app.assertLogin loader.parent,"正男をアップロードするにはログインして下さい。",->
 		node=loader()
@@ -32,20 +35,25 @@ exports._init=(option,suburl,loader)->
 					# アプレットを発見
 					code=applets.attr "code"
 					archive=applets.attr "archive"
+					masaodoc=makeDocObject applets.get 0
 				else
 					# objectを探す
 					objects=$ "object",doc
 					if objects.length>0
 						code=objects.find("param[name=\"code\"]").attr "value"
 						archive=objects.find("param[name=\"archive\"]").attr "value"
+						masaodoc=makeDocObject objects.get 0
 				
 				# 探し終わった
 				unless code?
 					# 見つからない
 					app.error $("#messagearea"),{message:"正男が見つかりませんでした。"}
 					je.target.setCustomValidity "正男ファイルが設定されていません"
+					form.elements["testplay"].disabled=true
+					masaodoc=null
 					return
 				je.target.setCustomValidity ""
+				form.elements["testplay"].disabled=false
 				
 				#archiveに基づいて正男判定(code未使用...)
 				if /mc_c\.jar$/.test archive
@@ -57,6 +65,9 @@ exports._init=(option,suburl,loader)->
 					form.elements["type"].value="normal"
 					chkVersion form
 					form.elements["version"].value="3.1"
+				masaodoc.type=form.elements["type"].value
+				masaodoc.version=form.elements["version"].value
+				
 				
 				
 					
@@ -67,7 +78,10 @@ exports._init=(option,suburl,loader)->
 		chkVersion form
 		# 変更
 		$("#uploadform select[name=\"type\"]").change chkVersion.bind null,form
-			
+		# テストプレイ
+		$(form.elements["testplay"]).click (je)->
+			# テストプレイ
+			$("#testplayarea").empty().append masaoloader.getMasaoObject masaodoc
 	return end:->
 
 # フォームのアレに応じてヴァージョン変える
@@ -84,3 +98,29 @@ chkVersion=(form)->
 	$(sl).empty()
 	choices.forEach (x)->
 		sl.add $("<option value='#{x}'>#{x}</option>").get 0
+		
+# applet,objectからdocを作る
+makeDocObject=(applet)->
+	masao=
+		tags:
+			script:""
+			header:""
+			footer:""
+		type:"normal"
+		version:"3.1"
+	
+	params={}
+	$(applet).find("param").each ->
+		params[@name]=@value
+	masao.params=params
+	doc=
+		masao:masao
+		number:null	#名前はまだない
+		author:null
+		title:null
+		description:null
+		user:
+			_id:null
+			name:null
+		resources:{}
+	doc

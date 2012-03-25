@@ -22,5 +22,8 @@ section
       p
         | バージョン
         select(name="version")
-    p: input(type="submit",value="アップロード")
+    p
+      input(type="submit",value="アップロード")
+      input(type="button",name="testplay",value="テストプレイ",disabled,title="アップロード前にテストプレイして動作を確認できます。")
   #messagearea
+  #testplayarea
