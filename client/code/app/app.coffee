@@ -63,23 +63,23 @@ exports.startURL=startURL=(parent,url="/",option={})->
 		url=url.slice origin.length
 	#urlは /foo/bar形式
 	directories=url.split("/")[1..]	# ["foo","bar"]
-	# 下から順番に
-	templatename=["public"]	# templateのほうも探す（-で結ぶ）
+	# 上から順番に
+	templatename=[]	# templateのほうも探す（-で結ぶ）
+	gone=[]	# ダメだったやつ
 	while directories.length>0
 		dirname=directories[0]	#dirnameといっても一番最後はディレクトリじゃなくてリソース名
 		flag=false
 		try
-			require.resolve "/#{templatename.join '/'}/#{dirname}"
+			require.resolve "/public/#{directories.join '/'}"
 			# no error
-			templatename.push dirname
-			directories.shift()
+			templatename=["public"].concat directories
+			break
 		catch e
 			# no module
-			break
+			gone.unshift directories.pop()
 
-	console.log templatename
 	current=null	# ページオブジェクト
-	if templatename.length==1
+	if templatename.length==0
 		# トップページだった
 		current=require '/special/top'	# トップページ
 	else
@@ -90,7 +90,7 @@ exports.startURL=startURL=(parent,url="/",option={})->
 		templatename.push "index"
 	###
 	#残ったurlは　オブジェクトに渡す
-	return startProcess parent,current,templatename?.join("-"),"/"+directories.join("/"),option
+	return startProcess parent,current,templatename?.join("-"),"/"+gone.join("/"),option
 	
 	
 #============== main code start

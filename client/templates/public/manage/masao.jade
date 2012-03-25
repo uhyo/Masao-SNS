@@ -1,0 +1,13 @@
+section.masao
+  h1 正男管理
+  form#masaomanagerform
+    p
+      | タイトル:
+      input(name="title",size="30",placeholder="タイトル",required,value=title)
+    p
+      | 作者:
+      input(name="author",size="20",placeholder="作者",required,value=author)
+    p
+      | 説明:
+      input(name="description",size="50",placeholder="説明",value=description)
+    p: input(value="決定",type="submit")
