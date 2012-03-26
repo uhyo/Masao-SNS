@@ -65,8 +65,8 @@ exports._init=(option,suburl,loader)->
 					form.elements["type"].value="normal"
 					chkVersion form
 					form.elements["version"].value="3.1"
-				masaodoc.type=form.elements["type"].value
-				masaodoc.version=form.elements["version"].value
+				masaodoc.masao.type=form.elements["type"].value
+				masaodoc.masao.version=form.elements["version"].value
 				
 				
 				
@@ -81,6 +81,8 @@ exports._init=(option,suburl,loader)->
 		# テストプレイ
 		$(form.elements["testplay"]).click (je)->
 			# テストプレイ
+			masaodoc.masao.type=form.elements["type"].value
+			masaodoc.masao.version=form.elements["version"].value
 			$("#testplayarea").empty().append masaoloader.getMasaoObject masaodoc
 	return end:->
 
