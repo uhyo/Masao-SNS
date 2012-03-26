@@ -3,9 +3,7 @@ exports.loadMasao=(masaoid,cb)->
 	# masaoidが表す正男を読み込む
 	query={}
 	if /^\d+$/.test masaoid
-		query.number=parseInt masaoid
-	else if masaoid
-		query._id=masaoid
+		query._id=parseInt masaoid
 	else
 		cb {error:"正男IDが不正です"}
 		return
@@ -37,6 +35,40 @@ exports.getMasaoObject=(doc)->
 	for x in ["title","ending","gameover","pattern"]
 		unless doc.resources[x]?
 			masao.params["filename_#{x}"]="/masaofiles/#{basedir}/#{x}.gif"
+	#se
+	se_default=
+		#filename_se_start: item.au"
+		start:"item"
+		gameover:"gameover"
+		clear:"clear"
+		coin:"coin"
+		get:"get"
+		item:"item"
+		jump:"jump"
+		sjump:"sjump"
+		kiki:"kiki"
+		fumu:"fumu"
+		tobasu:"tobasu"
+		fireball:"shot"
+		jet:"mgan"
+		miss:"dosun"
+		block:"bakuhatu"
+		mizu:"mizu"
+		dengeki:"mgan"
+		happa:"happa"
+		hinoko:"mgan"
+		mizudeppo:"happa"
+		bomb:"shot"
+		dosun:"dosun"
+		gronder:"mgan"
+		kaiole:"happa"
+		senkuuza:"shot"
+		dokan:"get"
+		chizugamen:"get"
+	for name,value of se_default
+		unless doc.resources["se_#{name}"]?
+			masao.params["filename_se_#{name}"]="/masaofiles/#{basedir}/#{value}.au"
+		
 	
 	#paramをセットする
 	#まずcode

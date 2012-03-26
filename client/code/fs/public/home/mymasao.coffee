@@ -13,7 +13,7 @@ exports._init=(option,suburl,loader)->
 		docs.forEach (doc)->
 			li=document.createElement "li"
 			a=document.createElement "a"
-			a.href="/masao/#{doc.number}"
+			a.href="/masao/#{doc._id}"
 			a.textContent=doc.title
 			a.title=doc.description
 			

@@ -131,7 +131,6 @@ makeDocObject=(applet)->
 	masao.params=params
 	doc=
 		masao:masao
-		number:null	#名前はまだない
 		author:null
 		title:null
 		description:null

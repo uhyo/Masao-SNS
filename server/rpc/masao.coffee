@@ -7,7 +7,7 @@ exports.actions = (req,res,ss)->
 	req.use 'session'
 
 	# 正男オブジェクトをひとつ得る
-	#query:{_id:"_id文字列"}または{number:数字}
+	#query:{_id:数字}
 	#エラー時: {error:"～"}
 	getMasao:(query)->
 		unless query?
@@ -15,11 +15,10 @@ exports.actions = (req,res,ss)->
 			return
 		M.masao (coll)->
 			q={}
-			if query.number
-				q.number=query.number
-			else if query._id
+			if query._id
 				# _idの文字列
-				q._id=dbutil.get_id query._id
+				q._id=query._id
+				console.log q
 			coll.findOne q,(err,doc)->
 				if err?
 					throw err
@@ -28,7 +27,7 @@ exports.actions = (req,res,ss)->
 				else
 					res doc
 	# 正男情報を変更する
-	#query:{number:1,title:"foo",author:"bar",description:"hoge"}
+	#query:{_id:1,title:"foo",author:"bar",description:"hoge"}
 	#res {error?:String, success?:true}
 	manage:(query)->
 		unless query?
@@ -36,7 +35,7 @@ exports.actions = (req,res,ss)->
 			return
 		M.masao (coll)->
 			q=
-				number:parseInt query.number
+				id:parseInt query._id
 			coll.findOne q,(err,doc)->
 				if err?
 					throw err
@@ -90,7 +89,7 @@ exports.actions = (req,res,ss)->
 		
 		#OK
 		serveNewNumber (num)->
-			doc.number=num
+			doc._id=num
 			# 自分の情報も添える
 			M.users (coll)->
 				coll.findOne {id:req.session.userId}, (err,user)->
@@ -104,8 +103,8 @@ exports.actions = (req,res,ss)->
 						coll2.insert doc,(err,docs)->
 							res {
 								success:true
-								number:doc.number
+								number:doc._id	#数値
 							}
 	
 # 正男の連番を得る
-serveNewNumber=(cb)-> require('../dbutil').count "masaoNumber",cb
+serveNewNumber=(cb)-> dbutil.count "masaoNumber",cb

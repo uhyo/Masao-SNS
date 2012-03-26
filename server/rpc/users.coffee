@@ -1,5 +1,6 @@
 # Server-side Code
 crypto=require 'crypto'
+dbutil=require '../dbutil.coffee'
 
 exports.actions = (req,res,ss)->
 
@@ -23,7 +24,7 @@ exports.actions = (req,res,ss)->
 					# パスワードが一致
 					req.session.setUserId user.id
 					# 内部IDも覚えておく
-					req.session._id=user._id
+					req.session._id=String user._id	#Stringで保存注意
 					req.session.save ->
 						res null	# 成功
 					# IPアドレスと最終ログイン時間を上書きする
@@ -117,7 +118,7 @@ exports.actions = (req,res,ss)->
 			res error:"ログインして下さい"
 			return
 		M.masao (coll)->
-			coll.find {"user._id":req.session._id},(err,cursor)->
+			coll.find {"user._id":dbutil.get_id(req.session._id)},(err,cursor)->
 				if err?
 					throw err
 				cursor.toArray (err,docs)->
