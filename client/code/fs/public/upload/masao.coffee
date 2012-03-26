@@ -54,6 +54,7 @@ exports._init=(option,suburl,loader)->
 					return
 				je.target.setCustomValidity ""
 				form.elements["testplay"].disabled=false
+				form.elements["title"].value=doc.title
 				
 				#archiveに基づいて正男判定(code未使用...)
 				if /mc_c\.jar$/.test archive
@@ -84,6 +85,19 @@ exports._init=(option,suburl,loader)->
 			masaodoc.masao.type=form.elements["type"].value
 			masaodoc.masao.version=form.elements["version"].value
 			$("#testplayarea").empty().append masaoloader.getMasaoObject masaodoc
+			
+		# 送信
+		$(form).submit (je)->
+			je.preventDefault()
+			masaodoc[x]=form.elements[x].value for x in ["title","author","description"]
+			ss.rpc "masao.upload",masaodoc,(result)->
+				if result.error?
+					app.error $("#messagearea"),message:result.error
+					return
+				if result.success
+					# 正男ページに移動
+					app.startURL loader.parent,"/masao/#{result.number}"
+			
 	return end:->
 
 # フォームのアレに応じてヴァージョン変える
