@@ -79,7 +79,7 @@ exports.actions = (req,res,ss)->
 		unless doc.masao.params?
 			res error:"正男のパラメータ情報がありません"
 			return
-		unless doc.masao.type && doc.masao.version
+		unless doc.masao.type && doc.masao.version && doc.masao.code
 			res error:"正男のパラメータ情報がありません"
 			return
 		doc.masao.tags=
@@ -99,12 +99,64 @@ exports.actions = (req,res,ss)->
 					doc.user=
 						_id:user._id
 						name:user.name
+					doc.uptime=new Date
 					M.masao (coll2)->
 						coll2.insert doc,(err,docs)->
 							res {
 								success:true
 								number:doc._id	#数値
 							}
+	# 正男のコメントを投稿した
+	#query:{_id:masaoid,comment:String,score:Number/null}
+	comment:(query)->
+		unless query?
+			res error:"クエリが不正です"
+			return
+		unless req.session.userId
+			res error:"ログインして下さい"
+			return
+		# 不正なクエリを弾く
+		unless typeof query._id=="number"
+			res error:"正男IDが不正です"
+			return
+		unless typeof query.comment=="string"
+			res error:"コメントが不正です"
+			return
+		unless 0<query.comment.length<=config.masaocomment.maxlength
+			res error:"コメントが長すぎます"
+			return
+		unless query.score==null || typeof query.score=="number"
+			res error:"スコアが不正です"
+			return
+		# まず正男を探す
+		M.masao (coll)->
+			coll.findOne {_id:query._id}, (err,masao)->
+				unless masao?
+					res error:"その正男は存在しません"
+					return
+				
+				# ユーザーを探す
+				M.users (coll2)->
+					coll2.findOne {_id:dbutil.get_id req.session._id},(err,user)->
+						unless user?
+							res error:"不正なユーザーです"
+							return
+						#docを作る
+						doc=
+							masaoid:query._id
+							user:user._id	#ユーザーのObjectID
+							name:user.name
+							comment:query.comment
+							time:new Date
+							score:query.score
+						
+						#入れる
+						M.masaocomments (coll3)->
+							coll3.insert doc,(err,docs)->
+								res success:true
+									
+					
+		
 	
 # 正男の連番を得る
 serveNewNumber=(cb)-> dbutil.count "masaoNumber",cb

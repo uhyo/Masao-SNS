@@ -56,7 +56,7 @@ exports._init=(option,suburl,loader)->
 				form.elements["testplay"].disabled=false
 				form.elements["title"].value=doc.title
 				
-				#archiveに基づいて正男判定(code未使用...)
+				#archiveに基づいて正男判定
 				if /mc_c\.jar$/.test archive
 					# FX
 					form.elements["type"].value="fx"
@@ -66,8 +66,11 @@ exports._init=(option,suburl,loader)->
 					form.elements["type"].value="normal"
 					chkVersion form
 					form.elements["version"].value="3.1"
+				form.elements["code"].value=code
+
 				masaodoc.masao.type=form.elements["type"].value
 				masaodoc.masao.version=form.elements["version"].value
+				masaodoc.masao.code=code
 				
 				
 				
@@ -84,12 +87,15 @@ exports._init=(option,suburl,loader)->
 			# テストプレイ
 			masaodoc.masao.type=form.elements["type"].value
 			masaodoc.masao.version=form.elements["version"].value
+			masaodoc.masao.code=form.elements["code"].value
 			$("#testplayarea").empty().append masaoloader.getMasaoObject masaodoc
 			
 		# 送信
 		$(form).submit (je)->
 			je.preventDefault()
 			masaodoc[x]=form.elements[x].value for x in ["title","author","description"]
+			masaodoc.masao[x]=form.elements[x].value for x in ["type","version","code"]
+
 			ss.rpc "masao.upload",masaodoc,(result)->
 				if result.error?
 					app.error $("#messagearea"),message:result.error
@@ -124,6 +130,7 @@ makeDocObject=(applet)->
 			footer:""
 		type:"normal"
 		version:"3.1"
+		code:"MasaoConstruction"
 	
 	params={}
 	$(applet).find("param").each ->

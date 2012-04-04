@@ -15,7 +15,13 @@ exports._init=(option,suburl,loader)->
 		node=loader null,doc
 		wrapper=$(node).find "div.masaowrapper"
 
-		wrapper.append masaoloader.getMasaoObject doc
+		#object要素
+		masaoobject=masaoloader.getMasaoObject doc
+		wrapper.append masaoobject
+		
+		# コメントフォームを作る
+		app.assertLogin $("#commentarea"),"コメントをするにはログインして下さい",->
+			app.startProcess $("#commentarea"),require('/special/masao/comment'),null,null,{masaoid:parseInt(masaoid), object:masaoobject}
 		
 	
 	return end:->

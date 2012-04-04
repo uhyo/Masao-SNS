@@ -1,0 +1,9 @@
+section.masaocomment
+  h1 コメント
+  form#masaocommentform
+    p: input(name="comment",size="60",maxlength="100",required)
+    p
+      input(type="submit",value="送信")
+      label
+        input(type="checkbox",name="sendhighscore",checked)
+        | ハイスコアをランキングに登録する

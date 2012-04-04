@@ -22,6 +22,14 @@ section
       p
         | バージョン
         select(name="version")
+      p
+        | クラス
+        input(name="code",type="text",size="30",list="classchoice",required)
+        datalist#classchoice
+          option(value="MasaoConstruction") MasaoConstruction
+          option(value="MasaoJSS") MasaoJSS
+          option(value="MasaoKani") MasaoKani
+      
     p
       input(type="submit",value="アップロード")
       input(type="button",name="testplay",value="テストプレイ",disabled,title="アップロード前にテストプレイして動作を確認できます。")

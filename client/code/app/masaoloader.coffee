@@ -20,7 +20,7 @@ exports.getMasaoObject=(doc)->
 	masao=doc.masao
 	
 	# code,archive,basedir（ファイルの親）
-	code="MasaoConstruction"
+	code=masao.code ? "MasaoConstruction"
 	archive=null
 	basedir=null
 	switch masao.type

@@ -12,3 +12,8 @@ exports.mongo=
 exports.user=
   # 新しいユーザーは、同じIPアドレスで直近newuserWait秒の間にログインしていたらできない
   newuserWait:86400
+  
+# 正男コメントの設定
+exports.masaocomment=
+  # コメントの最大長さ（文字数）
+  maxlength:100

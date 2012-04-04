@@ -1,7 +1,7 @@
 global.MongoDB=mongodb=require 'mongodb'
 
 #使用するコレクションを列挙しよう
-collections=["users","masao","counters"]
+collections=["users","masao","counters","masaocomments"]
 
 
 mc=config.mongo
