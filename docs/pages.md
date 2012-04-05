@@ -57,6 +57,7 @@ SocketStreamでは、まず最初に`client/code/app/entry.coffee`が呼ばれ�
 また、`loader.controller`にはユーティリティメソッドが入っている。
 
 ## controllerのメソッド
+controllerは、startURL,startProcessの戻り値として渡されるため外部からも操作が可能。
 ### urlFilter
 `loader.urlFilter regexp[, func]`
 
@@ -64,3 +65,11 @@ SocketStreamでは、まず最初に`client/code/app/entry.coffee`が呼ばれ�
 
 また、引数が省略された場合、その領域内のみ新しいページに書き換える動作になる。デフォルトではリンクがクリックされるとページ全体が書き換えられるが、書き換えを一部分にとどめる効果がある。
 
+## controllerのプロパティ
+### cont
+contには、_initから返されたオブジェクトが入っている。
+
+外部から操作することができる。
+
+## 注意
+`client/templates/tmp`以下には、ページ単位ではないが他のところから参照されるテンプレートが入っている。

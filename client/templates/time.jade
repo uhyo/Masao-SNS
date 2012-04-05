@@ -1,0 +1,14 @@
+//- Dateをtime要素に変換する
+//- time:Dateオブジェクト
+
+//-マイナスかどうか
+
+- var flag=time.getTimezoneOffset()<=0
+- var offset=Math.abs(time.getTimezoneOffset())
+- var date=time.getFullYear()+"-"+("0"+(time.getMonth()+1)).slice(-2)+"-"+("0"+time.getDate()).slice(-2)
+- var t=("0"+time.getHours()).slice(-2)+":"+("0"+time.getMinutes()).slice(-2)+":"+("0"+time.getSeconds()).slice(-2)
+- var offsetstring=("0"+Math.floor(offset/60)).slice(-2)+":"+("0"+(offset%60)).slice(-2)
+- if(flag)
+  time(datetime="#{date}T#{t}+#{offsetstring}") #{date} #{t}
+- else
+  time(datetime="#{date}T#{t}-#{offsetstring}") #{date} #{t}

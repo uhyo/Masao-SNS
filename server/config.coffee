@@ -17,3 +17,5 @@ exports.user=
 exports.masaocomment=
   # コメントの最大長さ（文字数）
   maxlength:100
+  # 1ページのコメント表示数
+  pagelength:10

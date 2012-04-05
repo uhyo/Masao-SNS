@@ -18,7 +18,6 @@ exports.actions = (req,res,ss)->
 			if query._id
 				# _idの文字列
 				q._id=query._id
-				console.log q
 			coll.findOne q,(err,doc)->
 				if err?
 					throw err
@@ -154,9 +153,27 @@ exports.actions = (req,res,ss)->
 						M.masaocomments (coll3)->
 							coll3.insert doc,(err,docs)->
 								res success:true
-									
-					
-		
+	# コメントを取得
+	getComments:(masaoid,type,page)->
+		unless typeof masaoid=="number"
+			res error:"正男IDが不正です"
+			return
+		unless type in ["time","rank"]
+			# これ以外はだめ
+			res error:"ランクが不正です"
+			return
+		page=parseInt page
+		query=
+			masaoid:masaoid
+		sort={}
+		if type=="time"
+			sort.time=-1	# desc
+		else
+			sort.score=-1	# desc. nullは最後に来る
+		M.masaocomments (coll)->
+			coll.find(query).sort(sort).limit(config.masaocomment.pagelength).skip(page*config.masaocomment.pagelength).toArray (err,docs)->
+				#docs
+				res docs
 	
 # 正男の連番を得る
 serveNewNumber=(cb)-> dbutil.count "masaoNumber",cb

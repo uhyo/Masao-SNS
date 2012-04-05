@@ -19,9 +19,13 @@ exports._init=(option,suburl,loader)->
 		masaoobject=masaoloader.getMasaoObject doc
 		wrapper.append masaoobject
 		
+		# コメントを表示する
+		commentscontroller=app.startURL $("#commentsviewarea"),"/comments/masao/#{masaoid}"
+
 		# コメントフォームを作る
 		app.assertLogin $("#commentarea"),"コメントをするにはログインして下さい",->
-			app.startProcess $("#commentarea"),require('/special/masao/comment'),null,null,{masaoid:parseInt(masaoid), object:masaoobject}
+			app.startProcess $("#commentarea"),require('/special/masao/comment'),null,null,{masaoid:parseInt(masaoid), object:masaoobject,callback:->commentscontroller.cont.refresh()}
+			
 		
 	
 	return end:->

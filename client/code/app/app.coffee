@@ -38,6 +38,7 @@ exports.startProcess=startProcess=(parent,processobj,template,suburl,option={})-
 				# 外部へ
 				return
 			# マッチするかどうか
+			console.log url.attr("path")
 			result=url.attr("path").match regexp
 			if result?
 				je.preventDefault()
@@ -62,7 +63,6 @@ exports.startURL=startURL=(parent,url="/",option={})->
 	if url.indexOf(origin)==0
 		#プロトコルから始まる場合には /foo/bar 形式に修正
 		url=url.slice origin.length
-	console.log parent
 	if $(parent).attr("id")=="contents" && !option._nohistory
 		# 全体的に移動する場合は履歴いじる
 		history.pushState "","",url

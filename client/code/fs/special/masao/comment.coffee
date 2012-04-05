@@ -1,4 +1,5 @@
-#option:{masaoid:Number,object:[HTMLObjectElement]}
+#option:{masaoid:Number,object:[HTMLObjectElement],callback?:(投稿したときのコールバック)}
+#コメントフォーム
 exports._init=(option,suburl,loader)->
 	
 	masaoid=option.masaoid
@@ -34,5 +35,7 @@ exports._init=(option,suburl,loader)->
 				return
 			#成功
 			app.message loader.parent,{message:"コメントを投稿しました。"}
+			#投稿したらコールバックがあるかも
+			option.callback?()
 		
 	return end:->
