@@ -8,6 +8,13 @@ exports.mongo=
   user:"test"
   password:"test"
 
+#DBのcappedの設定
+exports.mongoCapped=
+  #logs
+  logs:
+    size:1000000 #100KB
+    max:1000 #1000件まで
+
 # ユーザー関係の設定
 exports.user=
   # 新しいユーザーは、同じIPアドレスで直近newuserWait秒の間にログインしていたらできない

@@ -1,7 +1,10 @@
 global.MongoDB=mongodb=require 'mongodb'
 
 #使用するコレクションを列挙しよう
-collections=["users","masao","counters","masaocomments"]
+collections=["users","masao","counters","masaocomments","logs"]
+
+#CappedCollectionになるやつを列挙
+cappeds=["logs"]
 
 
 mc=config.mongo
@@ -15,6 +18,7 @@ MDB.open (err,client)->
       console.error err
       throw err
     console.log "MongoDB Connection: success"
+    
     global.M={}	#collectionへの簡易アクセス
     collections.forEach (x)->
       M[x]= (cb)->
@@ -23,5 +27,7 @@ MDB.open (err,client)->
             console.error err
             throw err
           cb col
-        
+    #capped Collection
+    cappeds.forEach (x)->
+      MDB.createCollection x,{capped:true,size:config.mongoCapped[x].size,max:config.mongoCapped[x].max},->
 
