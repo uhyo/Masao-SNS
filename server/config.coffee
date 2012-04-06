@@ -26,3 +26,8 @@ exports.masaocomment=
   maxlength:100
   # 1ページのコメント表示数
   pagelength:10
+  
+# 正男リストの設定
+exports.masaolist=
+  # 1ページの表示件数最高
+  pagemaxlength:50

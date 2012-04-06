@@ -1,6 +1,5 @@
 
 exports._init=(option,suburl,loader)->
-	node=loader()
 	app=require '/app'
 	
 	ss.rpc "users.myMasao", (docs)->
@@ -9,6 +8,8 @@ exports._init=(option,suburl,loader)->
 			#エラー
 			app.startProcess loader.parent,require('/special/error'),null,null,{title:"エラー",message:docs.error}
 			return
+		node=loader null,{masaos:docs}
+		###
 		ul=$ "#masaolist"
 		docs.forEach (doc)->
 			li=document.createElement "li"
@@ -23,6 +24,6 @@ exports._init=(option,suburl,loader)->
 			a2.textContent="設定"
 			
 			ul.append $(li).append(a).append(document.createTextNode " ").append a2
-
+		###
 		
 	return end:->

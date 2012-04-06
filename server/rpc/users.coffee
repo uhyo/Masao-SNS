@@ -118,13 +118,32 @@ exports.actions = (req,res,ss)->
 			res error:"ログインして下さい"
 			return
 		M.masao (coll)->
-			coll.find {"user._id":dbutil.get_id(req.session._id)},(err,cursor)->
+			coll.find {"user._id":dbutil.get_id req.session._id},(err,cursor)->
 				if err?
 					throw err
 				cursor.toArray (err,docs)->
 					docs.forEach (x)->
 						delete x.masao	# 本体はいらない
 					res docs
+	# 他人のホームを見る
+	#query: _id:String(ObjectID) または id:(userid)
+	#res {error:String} / {user:doc}
+	profile:(query)->
+		q={}
+		if query._id
+			q._id=dbutil.get_id query._id
+		else
+			q.id=query.id
+		M.users (coll)->
+			coll.findOne q,(err,doc)->
+				unless doc?
+					res error:"そのユーザーは存在しません"
+					return
+				# 余計な情報削除
+				publishFilter doc
+				res {user:doc}
+				
+			
 
 #raw password -> hashed password
 cryptopassword=(raw,salt=null)->

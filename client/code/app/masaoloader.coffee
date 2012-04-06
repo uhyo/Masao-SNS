@@ -8,6 +8,15 @@ exports.loadMasao=(masaoid,cb)->
 		cb {error:"正男IDが不正です"}
 		return
 	ss.rpc "masao.getMasao",query,cb
+exports.viewMasao=(masaoid,cb)->
+	# masaoidが表す正男を閲覧
+	query={}
+	if /^\d+$/.test masaoid
+		query._id=parseInt masaoid
+	else
+		cb {error:"正男IDが不正です"}
+		return
+	ss.rpc "masao.viewMasao",query,cb
 	
 # 正男のobject要素を作る
 #doc: DBに入っているやつ

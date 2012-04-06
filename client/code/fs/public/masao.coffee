@@ -4,7 +4,7 @@ exports._init=(option,suburl,loader)->
 	masaoid=suburl.slice 1	#/を取り除く
 	# 正男を問い合わせる
 	masaoloader=require '/masaoloader'
-	masaoloader.loadMasao masaoid,(doc)->
+	masaoloader.viewMasao masaoid,(doc)->
 		app=require '/app'
 		if doc.error?
 			app.startProcess loader.parent,require('/special/error'),null,null,{title:"エラー",message:doc.error}

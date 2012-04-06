@@ -25,6 +25,36 @@ exports.actions = (req,res,ss)->
 					res {error:"その正男は存在しません"}
 				else
 					res doc
+	# 正男ページを閲覧した
+	viewMasao:(query)->
+		unless query?
+			res {error:"クエリが不正です"}
+			return
+		M.masao (coll)->
+			q=
+				_id:query._id	#Number
+			coll.findOne q,(err,doc)->
+				if err?
+					throw err
+				unless doc?
+					res {error:"その正男は存在しません"}
+				else
+					res doc
+					#送った後に閲覧ログをとる
+					coll.update q,{$inc:{viewcount:1}},{safe:true},(err)->
+						M.logs (coll2)->
+							#logをとる
+							q=
+								type:"masaoview"
+								masaoid:query._id
+								time:new Date
+							if req.session.userId
+								q.user=dbutil.get_id req.session.user_id
+							else
+								q.user=null
+							coll2.insert q
+					
+					
 	# 正男情報を変更する
 	#query:{_id:1,title:"foo",author:"bar",description:"hoge"}
 	#res {error?:String, success?:true}
@@ -136,7 +166,7 @@ exports.actions = (req,res,ss)->
 				
 				# ユーザーを探す
 				M.users (coll2)->
-					coll2.findOne {_id:dbutil.get_id req.session._id},(err,user)->
+					coll2.findOne {_id:req.session._id},(err,user)->
 						unless user?
 							res error:"不正なユーザーです"
 							return
@@ -174,6 +204,38 @@ exports.actions = (req,res,ss)->
 			coll.find(query).sort(sort).limit(config.masaocomment.pagelength).skip(page*config.masaocomment.pagelength).toArray (err,docs)->
 				#docs
 				res docs
+	# 正男リスト
+	#query: {(user_id:ObjectID),(userid:String),page:Number,length:Number}
+	masaolist:(query)->
+		unless query?
+			res error:"クエリが不正です"
+			return
+		#userの_idを取得したら次へ
+		ne=(user_id)->
+			M.masao (coll)->
+				q=
+					"user._id":user_id
+				query.page ?= 0	#何ページ目か
+				query.page=0 if query.page<0
+				# query.length: 1ページに表示する件数
+				coll.find(q).limit(Math.min(query.length,config.masaolist.pagemaxlength)).skip(query.page).toArray (err,docs)->
+					# docsを送る
+					docs.forEach (x)->
+						delete x.masao
+					res docs
+
+		# ユーザーを取得
+		if query.user_id
+			# ObjectIDが与えられた
+			ne dbutil.get_id query.user_id
+		else if query.userid
+			# ユーザーIDが与えられた
+			M.users (coll)->
+				coll.findOne {id:query.userid},(err,doc)->
+					unless doc?
+						res error:"そのユーザーは存在しません"
+						return
+					ne doc._id	#ObjectID
 	
 # 正男の連番を得る
 serveNewNumber=(cb)-> dbutil.count "masaoNumber",cb
