@@ -1,4 +1,6 @@
-div.masaolist
+section.masaolist
+  - if(title)
+    h1= title
   //- masaos:正男のdoc
   - each masao in masaos
     include ../tmp/masaobox

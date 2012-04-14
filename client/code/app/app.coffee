@@ -8,6 +8,15 @@ userid=null	# 自分のユーザーIDを覚えておく（サーバー側でも�
 exports.setId=(id)->userid=id
 exports.getId=->userid
 
+# プロセスを管理する
+processList=[]
+class Process
+	constructor:(@parent,@controller)->
+		$(@parent).one "close.app",(je)=>
+			je.stopPropagation()
+			processList=processList.filter (x)=>x!=this
+			@controller.cont.end?()	# 終了通知
+
 
 # プロセスをはじめる
 # parent: プロセスを追加すべきnode
@@ -38,7 +47,6 @@ exports.startProcess=startProcess=(parent,processobj,template,suburl,option={})-
 				# 外部へ
 				return
 			# マッチするかどうか
-			console.log url.attr("path")
 			result=url.attr("path").match regexp
 			if result?
 				je.preventDefault()
@@ -48,10 +56,16 @@ exports.startProcess=startProcess=(parent,processobj,template,suburl,option={})-
 				else
 					# ないなら移動する
 					startURL parent,href
+		$(parent).one "close.app",(je)->
+			$(parent).off "click"
 	
+	# 今までのを終了する
+	$(parent).trigger "close.app"
 		
 	#オブジェクトを呼び出す
-	controller.cont=processobj._init option,suburl,loader
+	controller.cont=processobj._init(option,suburl,loader) ? {}
+	
+	processList.push new Process parent,controller
 	
 	return controller
 		
@@ -116,6 +130,7 @@ exports.assertLogin=(opts...,cb)->
 		# ログイン済み
 		cb()
 	
+console.log "app!"
 #============== main code start
 # リンクを止める
 $(document).on 'click','a', (je)->
@@ -135,6 +150,9 @@ window.addEventListener 'popstate',(e)->
 	startURL $("#contents"),location.pathname
 
 startURL $("#contents"),location.pathname
+startURL $("#main_menu"),"/menu"
+
+$("#contents").on "close.app",(je)->je.stopPropagation()
 
 
 	

@@ -3,7 +3,6 @@ exports._init=(option,suburl,loader)->
 	app=require '/app'
 	
 	ss.rpc "users.myMasao", (docs)->
-		console.log docs
 		if docs.error?
 			#エラー
 			app.startProcess loader.parent,require('/special/error'),null,null,{title:"エラー",message:docs.error}

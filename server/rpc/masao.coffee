@@ -166,7 +166,7 @@ exports.actions = (req,res,ss)->
 				
 				# ユーザーを探す
 				M.users (coll2)->
-					coll2.findOne {_id:req.session._id},(err,user)->
+					coll2.findOne {_id:dbutil.get_id req.session._id},(err,user)->
 						unless user?
 							res error:"不正なユーザーです"
 							return
@@ -206,19 +206,21 @@ exports.actions = (req,res,ss)->
 				res docs
 	# 正男リスト
 	#query: {(user_id:ObjectID),(userid:String),page:Number,length:Number}
-	masaolist:(query)->
+	#sort: sort
+	masaolist:(query,sort)->
 		unless query?
 			res error:"クエリが不正です"
 			return
 		#userの_idを取得したら次へ
 		ne=(user_id)->
 			M.masao (coll)->
-				q=
-					"user._id":user_id
+				q={}
+				if user_id?
+					q["user._id"]=user_id
 				query.page ?= 0	#何ページ目か
 				query.page=0 if query.page<0
 				# query.length: 1ページに表示する件数
-				coll.find(q).limit(Math.min(query.length,config.masaolist.pagemaxlength)).skip(query.page).toArray (err,docs)->
+				coll.find(q).sort(sort).limit(Math.min(query.length,config.masaolist.pagemaxlength)).skip(query.page).toArray (err,docs)->
 					# docsを送る
 					docs.forEach (x)->
 						delete x.masao
@@ -236,6 +238,8 @@ exports.actions = (req,res,ss)->
 						res error:"そのユーザーは存在しません"
 						return
 					ne doc._id	#ObjectID
+		else
+			ne null
 	
 # 正男の連番を得る
 serveNewNumber=(cb)-> dbutil.count "masaoNumber",cb

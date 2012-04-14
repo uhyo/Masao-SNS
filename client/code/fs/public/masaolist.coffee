@@ -1,9 +1,11 @@
-# option:{user_id?:String}
+# option:{user_id?:String, title?:String}
 exports._init=(option={},suburl,loader)->
 
 	# 正男一覧を表示するぞ！
 	query={}
+	sort={}
 	page=0
+	title=option.title
 	
 	if option.user_id
 		# ObjectIDが分かっている
@@ -11,9 +13,16 @@ exports._init=(option={},suburl,loader)->
 	else if result=suburl.match /^\/user\/(\w+)$/
 		# ユーザーIDで正男一覧
 		query.userid=result[1]
+	else if suburl=="/latest"
+		# 新しい順
+		sort.uptime=-1	#新しい順
+		title ?= "最新の正男"
+	else if suburl=="/rank/view"
+		# 閲覧数
+		sort.viewcount=-1	# 閲覧数多いじゅん
+		title ?= "閲覧数ランキング"
 	
-	ss.rpc "masao.masaolist",query,(docs)->
-		console.log docs
-		node=loader null,{masaos:docs}
+	ss.rpc "masao.masaolist",query,sort,(docs)->
+		node=loader null,{masaos:docs,title:title}
 	return end:->
 	

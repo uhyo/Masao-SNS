@@ -18,6 +18,9 @@ exports._init=(option,suburl,loader)->
 			return
 		node=loader null,obj.user	# ユーザーデータ
 		
+		# 正男一覧を表示してあげる
+		app.startURL $("#masaosarea"),"/masaolist/user/#{obj.user.id}",{user_id:obj.user._id,title:"#{obj.user.name}の正男一覧"}
+		
 	
 	return end:->
 	
