@@ -1,0 +1,15 @@
+section
+  h1= name
+  - time = new Date(uptime)
+  p
+    | アップロード者:
+    a(href="/user/id/#{user._id}")= user.name
+    | (
+    include ../../time
+    | )
+  figure.preview
+  .formarea
+  .dataarea(hidden)
+    p ファイルサイズ:#{size}Bytes
+    p= comment
+    

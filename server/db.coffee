@@ -1,7 +1,7 @@
 global.MongoDB=mongodb=require 'mongodb'
 
 #使用するコレクションを列挙しよう
-collections=["users","masao","counters","masaocomments","logs"]
+collections=["users","masao","counters","masaocomments","logs","resources"]
 
 #CappedCollectionになるやつを列挙
 cappeds=["logs"]

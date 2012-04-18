@@ -2,6 +2,8 @@
 crypto=require 'crypto'
 dbutil=require '../dbutil.coffee'
 
+userutil=require '../user.coffee'
+
 exports.actions = (req,res,ss)->
 
 	req.use 'session'
@@ -85,7 +87,7 @@ exports.actions = (req,res,ss)->
 				if err?
 					res {error:err}
 					return
-				publishFilter user
+				userutil.publishFilter user
 				res user
 	# 自分のユーザーデータを変更
 	# cb: null/エラーメッセージ（あれば）
@@ -140,7 +142,7 @@ exports.actions = (req,res,ss)->
 					res error:"そのユーザーは存在しません"
 					return
 				# 余計な情報削除
-				publishFilter doc
+				userutil.publishFilter doc
 				res {user:doc}
 				
 			
@@ -166,9 +168,3 @@ makesalt= ->
 # ユーザーID・パスワードがvalidがどうか確かめる
 isValidId=(id)->/^\w+$/.test id
 isValidPassword=(pass)->/^\w+$/.test pass
-
-# ユーザーデータをクライアント側に公開する形に修正
-publishFilter=(user)->
-	delete user.password
-	delete user.ip
-	delete user.lasttime

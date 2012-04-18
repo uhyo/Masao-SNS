@@ -1,0 +1,35 @@
+//- special/resource/uploadから使用
+div
+  form.resourceuploadform
+    p
+      | リソースファイルを選択して下さい:
+      input(type="file",name="file",accept="text/html,text/plain,image/*")
+    fieldset
+      legend ファイル情報
+      p
+        | ファイル名
+        input(type="text",name="name",required)
+      p
+        | ファイルサイズ
+        input(type="text",name="size",disabled)
+      p
+        | ファイルの種類
+        input(type="text",name="type")
+    p
+      | ファイルの使用目的（強制力はありません）:
+      select(name="usage")
+        option(value="") （指定なし）
+        optgroup(label="画像")
+          option(value="filename_pattern") パターン画像
+          option(value="filename_title") タイトル画像
+          option(value="filename_ending") エンディング画像
+          option(value="filename_gameover") ゲームオーバー画像
+        optgroup(label="テキスト")
+          option(value="script") スクリプトファイル
+    p
+      | コメント
+      input(type="text",size="80",name="comment")
+    p: input(type="submit",value="アップロード")
+    figure
+      figcaption プレビュー
+      div.resourcepreviewarea

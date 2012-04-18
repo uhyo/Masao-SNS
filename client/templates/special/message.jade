@@ -4,3 +4,7 @@ section.messagepage
     h1= title
   - if(message)
     p= message
+  - if(typeof link=="object")
+    //- リンクを貼る
+    p
+      a(href=link.href)= link.text
