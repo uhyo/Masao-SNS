@@ -31,3 +31,7 @@ exports.masaocomment=
 exports.masaolist=
   # 1ページの表示件数最高
   pagemaxlength:50
+
+# リソースリストの設定
+exports.resourcelist=
+  pagemaxlength:20

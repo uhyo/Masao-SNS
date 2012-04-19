@@ -11,7 +11,7 @@ ss.client.define('main', {
 });
 
 ss.http.router.on('/', function(req, res) {
-  res.serve('main');
+  res.serveClient('main');
 });
 
 // Remove to use only plain .js, .html and .css files if you prefer
@@ -25,6 +25,10 @@ ss.client.templateEngine.use(require('ss-clientjade'));
 // Minimise and pack assets if you type  SS_ENV=production node app.js
 if (ss.env == 'production') ss.client.packAssets();
 
+//ここでしたい設定
+require('./server/appconfigure.coffee').configure(ss);
+
+
 var server = http.Server(ss.http.middleware);
 server.listen(3000);
 
@@ -32,5 +36,6 @@ server.listen(3000);
 global.config=require('./server/config.coffee');
 //DB接続
 require('./server/db.coffee');
+
 
 ss.start(server);
