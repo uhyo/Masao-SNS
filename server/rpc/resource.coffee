@@ -15,6 +15,9 @@ exports.actions = (req,res,ss)->
 		unless query.type? && query.size && query.name && query.usage? && query.comment? && query.data?
 			res error:"データが不正です"
 			return
+		unless req.session._id
+			res error:"ログインして下さい"
+			return
 		#data: base64 encoded
 		doc=
 			type:query.type
@@ -33,6 +36,34 @@ exports.actions = (req,res,ss)->
 						success:true
 						_id:docs[0]._id.toString()
 					}
+	update:(query)->
+		# query: update+_id
+		unless query.type? && query.size && query.name && query.usage? && query.comment?
+			res error:"データが不正です"
+			console.log query
+			return
+		unless req.session._id
+			res error:"ログインして下さい"
+			return
+		#data: base64 encoded
+		doc=
+			$set:
+				type:query.type
+				size:query.size
+				name:query.name
+				usage:query.usage
+				comment:query.comment
+				#user:dbutil.get_id req.session._id
+				#uptime:new Date
+		if query.data
+			doc["$set"].data=MongoDB.Binary new Buffer query.data,'base64'
+		M.resources (coll)->
+			# ユーザーが違っても困る
+			coll.update {_id:dbutil.get_id(query._id), user:dbutil.get_id(req.session._id)}, doc,{safe:true},(err)->
+				res {
+					success:true
+				}
+		
 	getResource:(query)->
 		unless query?
 			res error:"クエリが不正です"

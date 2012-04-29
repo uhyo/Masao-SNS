@@ -3,14 +3,13 @@
 #option.requirefile: ファイルが必要かどうか
 exports._init=(option={},suburl,loader)->
 	node=loader "special-resource-uploadform"
-	form=$(".resourceuploadform",node)
+	form=$(".resourceuploadform",node).get 0
 	preview=$(".resourcepreviewarea",node)
 	
 	util=require '/util'
 	
 	# プレビュー
 	$("input[type=\"file\"]",form).attr("required",option.requirefile ? false).change (je)->
-		form=je.target.form
 
 		# ファイルを取得
 		file=form.elements["file"].files[0]
@@ -39,7 +38,7 @@ exports._init=(option={},suburl,loader)->
 				img=util.previewImage reader.result
 				p.append img
 			reader.readAsDataURL file
-	form.submit (je)->
+	$(form).submit (je)->
 		je.preventDefault()
 		option.submit? je.target
 		
@@ -48,6 +47,26 @@ exports._init=(option={},suburl,loader)->
 		setForm:(doc)->
 			# resourcesに入っていたdocからフォーム入力
 			for x in ["type","size","name","usage","comment"]
-				form.get(0).elements[x].value=doc[x]
+				form.elements[x].value=doc[x]
+		requiresFile:(flg)->
+			form.elements["file"].required=flg
+		# base64 binaryをcbに渡す
+		getFile:(cb)->
+			file=form.elements["file"].files[0]
+			unless file?
+				cb null
+				return
+			
+			reader=new FileReader()
+			reader.onload=(e)->
+				#reader.result:ArrayBuffer
+				arr=new Uint8Array reader.result
+				#arrにデータ
+				string=Array.prototype.map.call(arr,(x)->String.fromCharCode x).join ""
+				base64data=btoa string
+				cb base64data
+			reader.readAsArrayBuffer file
+
+
 	}
 			

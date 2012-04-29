@@ -1,7 +1,7 @@
 section
   h1 正男管理
   form#masaomanagerform
-    input(type="hidden",name="number",value=number)
+    input(type="hidden",name="number",value=_id)
     p
       | タイトル:
       input(name="title",size="30",placeholder="タイトル",required,value=title)
@@ -13,4 +13,4 @@ section
       input(name="description",size="50",placeholder="説明",value=description)
     p: input(value="決定",type="submit")
     #messagearea
-    p: a(href="/masao/#{number}") 正男を開く
+    p: a(href="/masao/#{_id}") 正男を開く

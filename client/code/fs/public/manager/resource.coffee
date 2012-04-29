@@ -25,6 +25,24 @@ exports._init=(option,suburl,loader)->
 		
 		# フォーム
 		controller=app.startProcess $(".formarea",node),require('/special/resource/uploadform'),null,null, submit:(form)->
+			query=
+				type:form.elements["type"].value
+				name:form.elements["name"].value
+				size:form.elements["size"].value
+				usage:form.elements["usage"].value
+				comment:form.elements["comment"].value
+			
+			query._id=resource_id	# 更新
+			
+			controller.cont.getFile (base64data)->
+				if base64data?
+					query.data=base64data
+				ss.rpc "resource.update",query,(result)->
+					if result.error?
+						app.error loader.parent,{message:result.error}
+						return
+					app.startURL loader.parent,"/manager/resource/#{resource_id}"
+					
 		
 		if app.getId()!=result.user.id
 			# 管理者ではない
@@ -33,6 +51,7 @@ exports._init=(option,suburl,loader)->
 		
 		
 		controller.cont.setForm result
+		controller.cont.requiresFile false	# ファイルが無くても可
 	
 	return end:->
 

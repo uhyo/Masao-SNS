@@ -9,18 +9,9 @@ exports._init=(option,suburl,loader)->
 		node=loader()
 		messagearea=$(".messagearea",node)
 		
-		form=app.startProcess $(".formarea",node).get(0),require('/special/resource/uploadform'),null,null, submit:(form)->
+		controller=app.startProcess $(".formarea",node).get(0),require('/special/resource/uploadform'),null,null, submit:(form)->
 
-			file=form.elements["file"].files[0]
-			return unless file?
-			
-			reader=new FileReader()
-			reader.onload=(e)->
-				#reader.result:ArrayBuffer
-				arr=new Uint8Array reader.result
-				#arrにデータ
-				string=Array.prototype.map.call(arr,(x)->String.fromCharCode x).join ""
-				base64data=btoa string
+			controller.cont.getFile (base64data)->
 				
 				query=
 					type:form.elements["type"].value
@@ -37,7 +28,6 @@ exports._init=(option,suburl,loader)->
 					else
 						app.message loader.parent,{message:"アップロードしました。",link:{href:"/manager/resource/#{result._id}",text:"詳細を見る"}}
 			app.message messagearea,{message:"アップロードしています..."}
-			reader.readAsArrayBuffer file
 		
 				
 

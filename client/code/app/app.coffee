@@ -130,7 +130,6 @@ exports.assertLogin=(opts...,cb)->
 		# ログイン済み
 		cb()
 	
-console.log "app!"
 #============== main code start
 # リンクを止める
 $(document).on 'click','a', (je)->
