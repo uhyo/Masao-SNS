@@ -10,10 +10,10 @@ exports._init=(option={},suburl,loader)->
 	masaoloader=require '/masaoloader'
 	util=require '/util'
 	
-	masaodoc=null	# 正男のDBオブジェクト
+	masaodoc={}	# 正男のDBオブジェクト
 	
 	# プレビュー
-	$("input[type=\"file\"]",form).attr("required",option.requirefile ? false).change (je)->
+	$("input[type=\"file\"]",form).prop("required",option.requirefile ? false).change (je)->
 
 		# ファイルを取得
 		file=form.elements["file"].files[0]
@@ -53,7 +53,7 @@ exports._init=(option={},suburl,loader)->
 
 				je.target.setCustomValidity "正男ファイルが設定されていません"
 				form.elements["testplay"].disabled=true
-				masaodoc=null
+				masaodoc={}
 				return
 			je.target.setCustomValidity ""
 			form.elements["testplay"].disabled=false
@@ -80,7 +80,8 @@ exports._init=(option={},suburl,loader)->
 	$(form).submit (je)->
 		je.preventDefault()
 		masaodoc[x]=form.elements[x].value for x in ["title","author","description"]
-		masaodoc.masao[x]=form.elements[x].value for x in ["type","version","code"]
+		if masaodoc.masao?
+			masaodoc.masao[x]=form.elements[x].value for x in ["type","version","code"]
 
 		option.submit? je.target
 		
@@ -100,9 +101,16 @@ exports._init=(option={},suburl,loader)->
 	return {
 		end:->
 		setForm:(doc)->
-			# resourcesに入っていたdocからフォーム入力
-			for x in ["type","size","name","usage","comment"]
+			masaodoc=doc
+			# masaoに入っていたdocからフォーム入力
+			for x in ["title","description","author"]
 				form.elements[x].value=doc[x]
+				
+			form.elements["type"].value=doc.masao.type
+			chkVersion form
+			for x in ["version","code"]
+				form.elements[x].value=doc.masao[x]
+			
 		requiresFile:(flg)->
 			form.elements["file"].required=flg
 		# base64 binaryをcbに渡す

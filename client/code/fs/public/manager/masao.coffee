@@ -13,26 +13,26 @@ exports._init=(option,suburl,loader)->
 			#正男がある
 			masao=doc.masao
 			node=loader null,doc
-	
-			$("#masaomanagerform").submit (je)->
-				je.preventDefault()
-				query=require('/util').formQuery je.target
-		
-				ss.rpc "masao.manage",query,(obj)->
-					if obj?.error?
-						#エラー
-						app.error $("#messagearea"),{title:"エラー",message:obj.error}
-						return
-					#成功
-					app.message $("#messagearea"),{title:"正男管理",message:"情報を変更しました。"}
+			
+			manager=$(".managerarea",node)
+			message=$(".messagearea",node)
+			
+			controller=app.startProcess manager,require('/special/masao/uploadform'),null,null,{
+				requireFile:false
+				submit:(form)->
+					controller.cont.getMasao (masaodoc)->
+						masaodoc._id=masaoid
+						ss.rpc "masao.update",masaodoc,(obj)->
+							console.log obj,message
+							if obj?.error?
+								#エラー
+								app.error message,{title:"エラー",message:obj.error}
+								return
+							#成功
+							app.message message,{title:"正男管理",message:"情報を変更しました。",link:{text:"正男ページを開く",href:"/masao/#{masaoid}"}}
+			}
+			controller.cont.setForm doc
 			
 	
 	return end:->
-
-#param要素を作る
-param=(name,value)->
-	p=document.createElement "param"
-	p.name=name
-	p.value=value
-	p
 	

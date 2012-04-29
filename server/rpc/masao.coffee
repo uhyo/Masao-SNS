@@ -56,30 +56,49 @@ exports.actions = (req,res,ss)->
 					
 					
 	# 正男情報を変更する
-	#query:{_id:1,title:"foo",author:"bar",description:"hoge"}
+	#query:doc+_id
 	#res {error?:String, success?:true}
-	manage:(query)->
+	update:(query)->
 		unless query?
 			res error:"クエリが不正です"
 			return
+		# 書式チェック
+		unless query.title&&query.author&&query.description
+			res error:"情報を入力して下さい"
+			return
+		unless query.resources? && (typeof query.resources=="object")
+			res error:"リソース情報が不正です"
+			return
+
+		doc=
+			$set:{}
+		for x in ["title","author","description","resources"]
+			doc["$set"][x]=query[x]
+		
+		if query.masao?
+			unless query.masao.tags?
+				res error:"正男のタグ情報がありません"
+				return
+			unless query.masao.params?
+				res error:"正男のパラメータ情報がありません"
+				return
+			unless query.masao.type && query.masao.version && query.masao.code
+				res error:"正男のパラメータ情報がありません"
+				return
+			doc["$set"].masao=query.masao
 		M.masao (coll)->
 			q=
-				id:parseInt query._id
-			coll.findOne q,(err,doc)->
+				_id:query._id=parseInt query._id
+			coll.findOne q,(err,docc)->
 				if err?
 					throw err
-				unless doc?
+				unless docc?
 					res error:"その正男は存在しません"
 				else
-					unless doc.user._id==req.session._id	# 正男の所持者であるかどうか
+					unless String(docc.user._id)==req.session._id	# 正男の所持者であるかどうか
 						res error:"権限がありません"
 					else
-						up=
-							$set:
-								title:query.title
-								author:query.author
-								description:query.description
-						coll.update q,up,(err)->
+						coll.update q,doc,(err)->
 							if err?
 								throw err
 							res success:true
