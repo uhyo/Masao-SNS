@@ -1,16 +1,23 @@
 # アップロードフォーム
 #option.submit: 送信時に呼ばれる関数（引数：フォーム）
 #option.requirefile: ファイルが必要かどうか
+#option.user_id: 検索のデフォルトのユーザーID
 exports._init=(option={},suburl,loader)->
 	form=loader "special-masao-uploadform"
 	testplay=$(".testplayarea",form)
 	message=$(".messagearea",form)
+	resources=$(".resourcesarea",form)
+	selectarea=$(".selectarea",form)
+	
+	resourcesearch=$(".resourcesearchfield",form)
 	
 	app=require '/app'
 	masaoloader=require '/masaoloader'
 	util=require '/util'
 	
 	masaodoc={}	# 正男のDBオブジェクト
+	
+	resourcesObject={}	# 正男のリソース
 	
 	# プレビュー
 	$("input[type=\"file\"]",form).prop("required",option.requirefile ? false).change (je)->
@@ -82,8 +89,33 @@ exports._init=(option={},suburl,loader)->
 		masaodoc[x]=form.elements[x].value for x in ["title","author","description"]
 		if masaodoc.masao?
 			masaodoc.masao[x]=form.elements[x].value for x in ["type","version","code"]
+			
+		masaodoc.resources=resourcesObject
 
 		option.submit? je.target
+		
+	# リソース選択
+	$(form.elements["resourcefindbutton"]).click (je)->
+		opt=
+			user_id:form.elements["resourceuserid"].value
+			usage:form.elements["resourceusage"].value
+			select:(resource)->
+				# 選ばれたら呼ばれる
+				usage=form.elements["resourceusage"].value || resource.usage
+				unless usage
+					return
+				resources.find(".resourcebox").filter((idx)->@dataset.usage==usage).remove()
+				resourcesObject[usage]=resource._id
+				resources.append getResourceBox resource,usage
+				
+				
+		unless form.elements["resourceusageeq"].checked
+			delete opt.usage
+		
+		app.startURL selectarea,"/resourcelist",opt
+	if option.user_id
+		form.elements["resourceuserid"].value=option.user_id
+		
 		
 	chkVersion form
 	# 変更
@@ -98,10 +130,12 @@ exports._init=(option={},suburl,loader)->
 		masaodoc.masao.code=form.elements["code"].value
 		testplay.empty().append masaoloader.getMasaoObject masaodoc
 		
+		
 	return {
 		end:->
 		setForm:(doc)->
 			masaodoc=doc
+			resourcesObject=doc.resources ? {}
 			# masaoに入っていたdocからフォーム入力
 			for x in ["title","description","author"]
 				form.elements[x].value=doc[x]
@@ -110,6 +144,19 @@ exports._init=(option={},suburl,loader)->
 			chkVersion form
 			for x in ["version","code"]
 				form.elements[x].value=doc.masao[x]
+			
+			# リソースをアレする
+			resources.empty()
+			ids=[]
+			for name,value of resourcesObject
+				ids.push value
+			# 全部取得する
+			if ids.length>0
+				ss.rpc "resource.getResource",{_id:ids},(docs)->
+					for name,value of resourcesObject
+						for x in docs
+							if x._id==value
+								resources.append getResourceBox x,name
 			
 		requiresFile:(flg)->
 			form.elements["file"].required=flg
@@ -159,3 +206,9 @@ makeDocObject=(applet)->
 			name:null
 		resources:{}
 	doc
+	
+# resourcebox @return jQuery
+getResourceBox=(resource,usage)->
+	result=$ JT["tmp-resourcebox"] {resource:resource}
+	result.prop("dataset").usage=usage
+	result

@@ -68,26 +68,44 @@ exports.actions = (req,res,ss)->
 		unless query?
 			res error:"クエリが不正です"
 			return
-		#{query: _id, data?}
+		#{query: _id, data?: Boolean}	#_id:Arrayの場合全部
 		M.resources (coll)->
-			coll.findOne {_id:dbutil.get_id query._id},(err,doc)->
-				unless doc?
-					res error:"そのリソースは存在しません"
-					return
-				if query.data
-					# データも欲しい
-					doc.data= doc.data.buffer.toString "base64"
-				else
-					delete doc.data
-				M.users (coll2)->
-					# ユーザーデータもあげる
-					coll2.findOne {_id:doc.user},(err,user)->
-						if !user?
-							res error:"アップロード者のデータが取得できません"
-							return
-						userutil.publishFilter user
-						doc.user=user
-						res doc
+			if Array.isArray query._id
+				# 複数
+				coll.find({_id:{$in:query._id.map((x)->dbutil.get_id x)}}).toArray (err,docs)->
+					for doc in docs
+						if query.data
+							doc.data=doc.data.buffer.toString "base64"
+						else
+							delete doc.data
+					M.users (coll2)->
+						coll2.find({_id:{$in:docs.map (x)->x.user}}).toArray (err,users)->
+							console.log docs
+							for user in users
+								userutil.publishFilter user
+							for doc in docs
+								doc.user=users.filter((x)->String(x._id)==String(doc.user))[0]
+							res docs
+			else
+				# 一つ
+				coll.findOne {_id:dbutil.get_id query._id},(err,doc)->
+					unless doc?
+						res error:"そのリソースは存在しません"
+						return
+					if query.data
+						# データも欲しい
+						doc.data= doc.data.buffer.toString "base64"
+					else
+						delete doc.data
+					M.users (coll2)->
+						# ユーザーデータもあげる
+						coll2.findOne {_id:doc.user},(err,user)->
+							if !user?
+								res error:"アップロード者のデータが取得できません"
+								return
+							userutil.publishFilter user
+							doc.user=user
+							res doc
 	resourcelist:(query,sort)->
 		unless query?
 			res error:"クエリが不正です"
@@ -98,6 +116,9 @@ exports.actions = (req,res,ss)->
 				q={}
 				if user_id?
 					q.user=user_id
+				if query.usage?
+					q.usage=query.usage
+					
 				query.page ?= 0	#何ページ目か
 				query.page=0 if query.page<0
 				# query.length: 1ページに表示する件数

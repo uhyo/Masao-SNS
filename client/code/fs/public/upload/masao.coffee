@@ -10,7 +10,8 @@ exports._init=(option,suburl,loader)->
 		node=loader()
 		
 		controller=app.startProcess $("#uploadarea"),require('/special/masao/uploadform'),null,"",{
-			requirefile:true,
+			requirefile:true
+			user_id:app.getId()
 			submit:(form)->
 				controller.cont.getMasao (masaodoc)->
 					ss.rpc "masao.upload",masaodoc,(result)->

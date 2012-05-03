@@ -19,6 +19,7 @@ exports._init=(option,suburl,loader)->
 			
 			controller=app.startProcess manager,require('/special/masao/uploadform'),null,null,{
 				requireFile:false
+				user_id: app.getId()
 				submit:(form)->
 					controller.cont.getMasao (masaodoc)->
 						masaodoc._id=masaoid

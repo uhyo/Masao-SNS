@@ -42,8 +42,11 @@ exports.getMasaoObject=(doc)->
 	
 	#ファイル名はhard coding
 	for x in ["title","ending","gameover","pattern"]
-		unless doc.resources[x]?
-			masao.params["filename_#{x}"]="/masaofiles/#{basedir}/#{x}.gif"
+		pn="filename_#{x}"
+		unless doc.resources[pn]?
+			masao.params[pn]="/masaofiles/#{basedir}/#{x}.gif"
+		else
+			masao.params[pn]="/resource/#{doc.resources[pn]}"
 	#se
 	se_default=
 		#filename_se_start: item.au"

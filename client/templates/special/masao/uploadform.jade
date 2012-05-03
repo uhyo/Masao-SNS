@@ -12,7 +12,7 @@ form
     | 作者:
     input(name="author",type="text",size="30",placeholder="作者",required)
   fieldset
-    legend 正男の種類
+    legend 正男の種類（正男ファイルを選択すると自動で入力されます）
     select(name="type",required)
       option(value="normal",selected) まさおコンストラクション
       option(value="classic") まさおコンストラクション classic
@@ -27,7 +27,33 @@ form
         option(value="MasaoConstruction") MasaoConstruction
         option(value="MasaoJSS") MasaoJSS
         option(value="MasaoKani") MasaoKani
-    
+    section
+      h2 使用リソース
+      .resourcesarea
+      div
+        fieldset.resourcesearchfield
+          legend リソース検索
+          p
+            label
+              | 用途:
+              select(name="resourceusage")
+                option(value="") （すべて）
+                optgroup(label="画像")
+                  option(value="filename_pattern") パターン画像
+                  option(value="filename_title") タイトル画像
+                  option(value="filename_ending") エンディング画像
+                  option(value="filename_gameover") ゲームオーバー画像
+                optgroup(label="テキスト")
+                  option(value="script") スクリプトファイル
+            label
+              input(type="checkbox",name="resourceusageeq",checked)
+              | 用途が一致するもののみ検索
+          p
+            label
+              | ユーザーID:
+              input(name="resourceuserid",type="text",size="20")
+          p: input(name="resourcefindbutton",type="button",value="検索")
+        .selectarea
   p
     input(type="submit",value="アップロード")
     input(type="button",name="testplay",value="テストプレイ",disabled,title="アップロード前にテストプレイして動作を確認できます。")
