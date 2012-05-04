@@ -54,6 +54,26 @@ exports.actions = (req,res,ss)->
 		M.series (coll)->
 			coll.findOne query,(err,doc)->
 				res doc
+				
+	
+	# query:{_id, name, resources}
+	#res {error?:"" success?:true}
+	manage:(query)->
+		unless query?
+			res error:"クエリが不正です"
+			return
+		unless query.name && query.resources
+			res error:"データが不足しています"
+			return
+		M.series (coll)->
+			
+			doc=
+				$set:
+					name:query.name
+					resources:query.resources
+			
+			coll.update {_id:dbutil.get_id(query._id),"user._id":dbutil.get_id(req.session._id)},doc,{safe:true},(err)->
+				res success:true
 
 	serieslist:(query,sort)->
 		unless query?

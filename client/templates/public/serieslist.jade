@@ -1,0 +1,7 @@
+section.masaolist
+  - if(title)
+    h1= title
+  //- myseries:シリーズのdoc
+  - each series in myseries
+    - series._flg_select=select
+    include ../tmp/seriesbox

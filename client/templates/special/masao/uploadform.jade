@@ -1,4 +1,5 @@
 form
+  input(type="hidden",name="series")
   p
     | 正男のHTMLファイルを選択して下さい:
     input(type="file",name="file",accept="text/html,text/plain",required)
@@ -28,6 +29,7 @@ form
         option(value="MasaoJSS") MasaoJSS
         option(value="MasaoKani") MasaoKani
     .resourceedit
+    .seriesimport
   p
     input(type="submit",value="アップロード")
     input(type="button",name="testplay",value="テストプレイ",disabled,title="アップロード前にテストプレイして動作を確認できます。")

@@ -74,6 +74,9 @@ exports.actions = (req,res,ss)->
 			$set:{}
 		for x in ["title","author","description","resources"]
 			doc["$set"][x]=query[x]
+			
+		if query.series
+			doc["$set"].series=dbutil.get_id query.series
 		
 		if query.masao?
 			unless query.masao.tags?
@@ -134,6 +137,9 @@ exports.actions = (req,res,ss)->
 			script:doc.masao.tags.script
 			header:doc.masao.tags.header
 			footer:doc.masao.tags.footer
+		if doc.series
+			doc.series=dbutil.get_id doc.series
+
 		
 		#OK
 		serveNewNumber (num)->
@@ -224,7 +230,7 @@ exports.actions = (req,res,ss)->
 				#docs
 				res docs
 	# 正男リスト
-	#query: {(user_id:ObjectID),(userid:String),page:Number,length:Number}
+	#query: {(user_id:ObjectID),(userid:String),(series:String),page:Number,length:Number}
 	#sort: sort
 	masaolist:(query,sort)->
 		unless query?
@@ -236,6 +242,10 @@ exports.actions = (req,res,ss)->
 				q={}
 				if user_id?
 					q["user._id"]=user_id
+				if query.series
+					# シリーズ検索
+					q.series=dbutil.get_id query.series
+
 				query.page ?= 0	#何ページ目か
 				query.page=0 if query.page<0
 				# query.length: 1ページに表示する件数

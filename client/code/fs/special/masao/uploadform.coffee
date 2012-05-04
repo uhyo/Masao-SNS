@@ -8,6 +8,7 @@ exports._init=(option={},suburl,loader)->
 	message=$(".messagearea",form)
 	
 	resourceedit=$(".resourceedit",form)
+	seriesimport=$(".seriesimport",form)
 	
 	app=require '/app'
 	masaoloader=require '/masaoloader'
@@ -84,7 +85,9 @@ exports._init=(option={},suburl,loader)->
 
 	$(form).submit (je)->
 		je.preventDefault()
-		masaodoc[x]=form.elements[x].value for x in ["title","author","description"]
+		masaodoc[x]=form.elements[x].value for x in ["title","author","description","series"]
+		unless masaodoc.series
+			delete masaodoc.series
 		if masaodoc.masao?
 			masaodoc.masao[x]=form.elements[x].value for x in ["type","version","code"]
 			
@@ -119,6 +122,14 @@ exports._init=(option={},suburl,loader)->
 		user_id: option.user_id
 		title:"使用リソース"
 	}
+	# シリーズ選択
+	seriesimportcont = app.startURL seriesimport,"/serieslist#{if option.user_id then "/user/#{option.user_id}" else ""}",{
+		user_id: option.user_id
+		title:"シリーズの選択"
+		select:(series)->
+			form.elements["series"].value=series._id
+			resourceeditcont.cont.setResources series.resources
+	}
 		
 	chkVersion form
 	# 変更
@@ -140,7 +151,7 @@ exports._init=(option={},suburl,loader)->
 			masaodoc=doc
 			resourcesObject=doc.resources ? {}
 			# masaoに入っていたdocからフォーム入力
-			for x in ["title","description","author"]
+			for x in ["title","description","author","series"]
 				form.elements[x].value=doc[x]
 				
 			form.elements["type"].value=doc.masao.type
