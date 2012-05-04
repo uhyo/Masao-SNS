@@ -35,3 +35,7 @@ exports.masaolist=
 # リソースリストの設定
 exports.resourcelist=
   pagemaxlength:20
+  
+# シリーズリストの設定
+exports.serieslist=
+  pagemaxlength:20

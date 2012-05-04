@@ -6,10 +6,8 @@ exports._init=(option={},suburl,loader)->
 	form=loader "special-masao-uploadform"
 	testplay=$(".testplayarea",form)
 	message=$(".messagearea",form)
-	resources=$(".resourcesarea",form)
-	selectarea=$(".selectarea",form)
 	
-	resourcesearch=$(".resourcesearchfield",form)
+	resourceedit=$(".resourceedit",form)
 	
 	app=require '/app'
 	masaoloader=require '/masaoloader'
@@ -90,11 +88,12 @@ exports._init=(option={},suburl,loader)->
 		if masaodoc.masao?
 			masaodoc.masao[x]=form.elements[x].value for x in ["type","version","code"]
 			
-		masaodoc.resources=resourcesObject
+		masaodoc.resources=resourceeditcont.cont.getResources()
 
 		option.submit? je.target
 		
 	# リソース選択
+	###
 	$(form.elements["resourcefindbutton"]).click (je)->
 		opt=
 			user_id:form.elements["resourceuserid"].value
@@ -115,7 +114,11 @@ exports._init=(option={},suburl,loader)->
 		app.startURL selectarea,"/resourcelist",opt
 	if option.user_id
 		form.elements["resourceuserid"].value=option.user_id
-		
+	###
+	resourceeditcont = app.startProcess resourceedit,require('/special/resource/chooseresource'),null,"/",{
+		user_id: option.user_id
+		title:"使用リソース"
+	}
 		
 	chkVersion form
 	# 変更
@@ -145,18 +148,9 @@ exports._init=(option={},suburl,loader)->
 			for x in ["version","code"]
 				form.elements[x].value=doc.masao[x]
 			
-			# リソースをアレする
-			resources.empty()
-			ids=[]
-			for name,value of resourcesObject
-				ids.push value
-			# 全部取得する
-			if ids.length>0
-				ss.rpc "resource.getResource",{_id:ids},(docs)->
-					for name,value of resourcesObject
-						for x in docs
-							if x._id==value
-								resources.append getResourceBox x,name
+			resourceeditcont.cont.setResources resourcesObject
+			
+			
 			
 		requiresFile:(flg)->
 			form.elements["file"].required=flg

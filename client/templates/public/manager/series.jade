@@ -1,0 +1,14 @@
+section
+  h1: a(href="/series/#{_id}")= name
+  - time = new Date(uptime)
+  p
+    | アップロード者:
+    a(href="/user/id/#{user._id}")= user.name
+    | (
+    include ../../time
+    | )
+
+  form.seriesmanageform
+    p: label
+      | 名前:
+      input(type="text",name="name",value=name)

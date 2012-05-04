@@ -1,0 +1,12 @@
+section
+  h1 シリーズ管理
+  section
+    h2 新規作成
+    form.newseriesform
+      p: label
+        | シリーズ名:
+        input(type="text",name="name",size="30",required)
+      p: input(type="submit",value="作成")
+  -each series in myseries
+    include ../../tmp/seriesbox
+

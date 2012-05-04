@@ -1,4 +1,4 @@
-# アップロードフォーム
+# リソースを複数選択するフォーム
 #option.submit: 送信時に呼ばれる関数（引数：フォーム）
 #option.requirefile: ファイルが必要かどうか
 exports._init=(option={},suburl,loader)->
