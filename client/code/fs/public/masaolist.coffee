@@ -13,6 +13,9 @@ exports._init=(option={},suburl,loader)->
 	else if result=suburl.match /^\/user\/(\w+)$/
 		# ユーザーIDで正男一覧
 		query.userid=result[1]
+	else if result=suburl.match /^\/series\/(\w+)$/
+		# シリーズIDで正男一覧
+		query.series=result[1]
 	else if suburl=="/latest"
 		# 新しい順
 		sort.uptime=-1	#新しい順
